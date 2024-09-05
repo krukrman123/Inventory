@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -29,7 +29,7 @@ namespace Inventory
             descriptionTB.Clear();
         }
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         #region Functions
         void fillCategory()

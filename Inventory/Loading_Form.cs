@@ -29,11 +29,9 @@ namespace Inventory
             ProgressBar1.Text = ProgressBar1.Value.ToString() + "%";
             if (ProgressBar1.Value == 100)
             {
-                // Close the Loading_Form
                 this.Close();
                 timer1.Stop();
 
-                // Open the HomeForm with role-based adjustments
                 HomeFrom home = new HomeFrom();
                 home.Show();
             }

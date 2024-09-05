@@ -287,6 +287,7 @@
             ExitApp_Label.Size = new Size(28, 32);
             ExitApp_Label.TabIndex = 15;
             ExitApp_Label.Text = "X";
+            ExitApp_Label.Click += ExitApp_Label_Click;
             // 
             // RegisterForm
             // 

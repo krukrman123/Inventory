@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite; 
 using System.Windows.Forms;
 
 namespace Inventory
@@ -14,12 +14,13 @@ namespace Inventory
 
         private void ManageCustomers_Load(object sender, EventArgs e)
         {
-            selectCustomers(); // Opraveno na selectCustomers
+            selectCustomers(); 
             customerIdTB.Text = GenerateCustomerId();
         }
 
-        // SQLite connection string
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         private void btn_home_Click(object sender, EventArgs e)
         {
@@ -42,7 +43,7 @@ namespace Inventory
         #endregion
 
         #region Functions
-        void selectCustomers() // Opraveno na selectCustomers
+        void selectCustomers()
         {
             try
             {
@@ -99,7 +100,6 @@ namespace Inventory
                 {
                     Con.Open();
 
-                    // Get the number of orders
                     string orderCountQuery = "SELECT COUNT(*) FROM OrderTbl WHERE CustId = @CustomerId";
                     using (SQLiteCommand cmd = new SQLiteCommand(orderCountQuery, Con))
                     {
@@ -117,7 +117,6 @@ namespace Inventory
                         AmoutLabel.Text = totalAmount != DBNull.Value ? Convert.ToDecimal(totalAmount).ToString("C") : "0";
                     }
 
-                    // Get the last order date
                     string lastOrderDateQuery = "SELECT MAX(OrderDate) FROM OrderTbl WHERE CustId = @CustomerId";
                     using (SQLiteCommand cmd = new SQLiteCommand(lastOrderDateQuery, Con))
                     {

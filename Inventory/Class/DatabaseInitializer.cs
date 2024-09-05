@@ -4,7 +4,7 @@ namespace Inventory.Class
 {
     public static class DatabaseInitializer
     {
-        private static string connectionString = "Data Source=inventory.db;Version=3;";
+        private static string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         public static void Initialize()
         {
@@ -12,7 +12,6 @@ namespace Inventory.Class
             {
                 connection.Open();
 
-                // SQL query to create tables with UserRole column added to UserTbl
                 string createTablesQuery = @"
                 CREATE TABLE IF NOT EXISTS UserTbl (
                     Uname TEXT NOT NULL,
@@ -57,7 +56,6 @@ namespace Inventory.Class
                     CatName TEXT NOT NULL
                 );";
 
-                // Execute the SQL command
                 using (SQLiteCommand command = new SQLiteCommand(createTablesQuery, connection))
                 {
                     command.ExecuteNonQuery();

@@ -43,7 +43,6 @@ namespace Inventory
             {
                 con.Open();
 
-                // Assuming you have a method to hash the password
                 string hashedPassword = HashPassword(PasswordTB.Text);
 
                 string query = $"SELECT COUNT(*) FROM {UsersTableName} WHERE {UsernameColumn}=@username AND {PasswordColumn}=@password";
@@ -56,10 +55,8 @@ namespace Inventory
 
                     if (userCount == 1)
                     {
-                        // Store the username in the LoggedInUser class
                         LoggedInUser.Username = Username_TB.Text;
 
-                        // Open the loading form and hide the login form
                         Loading_Form loadForm = new Loading_Form();
                         this.Hide();
                         loadForm.ShowDialog();

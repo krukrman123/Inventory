@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite;
 using System.Windows.Forms;
 
 namespace Inventory
@@ -20,9 +20,9 @@ namespace Inventory
             categoryId_TB.Text = GenerateCustomerId();
         }
 
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         private void btn_home_Click(object sender, EventArgs e)
         {
@@ -46,7 +46,6 @@ namespace Inventory
                     var ds = new DataSet();
                     da.Fill(ds);
 
-                    // Ensure DataSource is set to null before assigning a new one
                     CategoryGV.DataSource = null;
                     CategoryGV.DataSource = ds.Tables[0];
                 }
@@ -78,18 +77,6 @@ namespace Inventory
                 return false;
             }
         }
-
-
-
-     
-
-
-
-
-
-
-
-
 
 
         private string GenerateCustomerId()
@@ -236,18 +223,16 @@ namespace Inventory
                 {
                     Con.Open();
 
-                    // Check if a category with the given ID already exists
                     SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM CategoryTbl WHERE CatId = @CategoryId", Con);
                     checkCmd.Parameters.AddWithValue("@CategoryId", categoryId);
                     long count = (long)checkCmd.ExecuteScalar();
 
-                    if (count > 0) // Count > 0 means the category ID already exists
+                    if (count > 0) 
                     {
                         MessageBox.Show("Category ID already exists.", "Registration Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    // Add a new category
                     SQLiteCommand cmd = new SQLiteCommand("INSERT INTO CategoryTbl (CatId, CatName) VALUES (@CategoryId, @CategoryName)", Con);
                     cmd.Parameters.AddWithValue("@CategoryId", categoryId);
                     cmd.Parameters.AddWithValue("@CategoryName", categoryName);

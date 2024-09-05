@@ -31,7 +31,7 @@ namespace Inventory
         ManageProductsView myformEdit = new ManageProductsView();
         ManageProductsAdd myformAdd = new ManageProductsAdd();
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         #region Exit/Minimized
 
@@ -126,7 +126,6 @@ namespace Inventory
                     string query = "SELECT COUNT(*) FROM CategoryTbl";
                     using (SQLiteCommand cmd = new SQLiteCommand(query, Con))
                     {
-                        // Use ExecuteScalar() to get the count
                         int count = Convert.ToInt32(cmd.ExecuteScalar());
                         return count > 0;
                     }

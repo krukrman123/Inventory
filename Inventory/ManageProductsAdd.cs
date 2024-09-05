@@ -4,13 +4,17 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite; 
 
 namespace Inventory
 {
     public partial class ManageProductsAdd : Form
     {
-        string connectionString = "Data Source=inventory.db;Version=3;";
+
+
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
         string ProdId = "";
 
         public ManageProductsAdd()
@@ -103,7 +107,6 @@ namespace Inventory
 
         void selectProducts()
         {
-            // Select data from the database
             using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 try

@@ -16,8 +16,8 @@ namespace Inventory
             LoadUserData();  
         }
 
-        // SQLite connection string
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
 
         private void btn_Logout_Click(object sender, EventArgs e)
@@ -117,6 +117,7 @@ namespace Inventory
         private void LoadUserData()
         {
             userLabel.Text = "Logged in as: " + LoggedInUser.Username;
+
         }
 
 

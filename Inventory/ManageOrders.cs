@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite; 
 using System.Windows.Forms;
 
 namespace Inventory
@@ -54,7 +54,7 @@ namespace Inventory
 
         /////////////////////////////// SQLite Connect //////////////////////////////////////////
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         private void btn_view_Click(object sender, EventArgs e)
         {
@@ -376,7 +376,6 @@ namespace Inventory
                 {
                     Con.Open();
 
-                    // Check for ID existence
                     SQLiteCommand checkIdCmd = new SQLiteCommand("SELECT COUNT(*) FROM OrderTbl WHERE OrderId = @OrderId", Con);
                     checkIdCmd.Parameters.AddWithValue("@OrderId", OrderIdTB.Text);
                     int count = Convert.ToInt32(checkIdCmd.ExecuteScalar());
@@ -511,7 +510,6 @@ namespace Inventory
 
         private void clear_BTN_Click(object sender, EventArgs e)
         {
-            // Restore stock for all products in the current order
             foreach (DataRow row in table.Rows)
             {
                 string product = row["Product"].ToString();
@@ -520,7 +518,6 @@ namespace Inventory
                 RestoreStock(product, quantity);
             }
 
-            // Clear the DataTable and DataGridView
             table.Clear();
             TotAmout.Text = "0";
             UpdateDataGridView();

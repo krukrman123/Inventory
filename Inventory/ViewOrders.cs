@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite;
 
 namespace Inventory
 {
@@ -14,9 +14,11 @@ namespace Inventory
         }
 
         #region ConnectToSQL
-        string connectionString = "Data Source=inventory.db;Version=3;";
 
-        // Function to retrieve data from OrderTbl table
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
+
         void selectProducts()
         {
             try
@@ -80,7 +82,6 @@ namespace Inventory
 
             int pageHeight = e.MarginBounds.Height;
 
-            // Alignment for content
             StringFormat format = new StringFormat();
             format.Alignment = StringAlignment.Near;
 
@@ -110,12 +111,12 @@ namespace Inventory
             e.Graphics.DrawString(selectedRow.Cells[4].Value.ToString() + "$", contentFont, brush, new Point(startX + 200, startY), format);
             startY += lineHeight;
 
-            // Name of company
+            
             Font companyFont = new Font("Century", 16, FontStyle.Italic);
             string companyName = "Adam Dobias";
             SizeF textSize = e.Graphics.MeasureString(companyName, companyFont);
-            int rightX = e.MarginBounds.Width - (int)textSize.Width; // X-coordinate to align to the right
-            int bottomY = e.MarginBounds.Bottom; // Y-coordinate at the bottom of the page
+            int rightX = e.MarginBounds.Width - (int)textSize.Width;
+            int bottomY = e.MarginBounds.Bottom; 
             e.Graphics.DrawString(companyName, companyFont, brush, new Point(rightX, bottomY - (int)textSize.Height));
         }
 

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Data.SQLite; // Použití SQLite
+using System.Data.SQLite; 
 using System.Configuration;
 
 namespace Inventory
@@ -19,7 +19,9 @@ namespace Inventory
             selectProducts();
         }
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
         #region Functions
 
@@ -120,7 +122,6 @@ namespace Inventory
                 {
                     Con.Open();
 
-                    // Check if the user with the given phone number exists
                     SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM UserTbl WHERE Uphone = @Telephone", Con);
                     checkCmd.Parameters.AddWithValue("@Telephone", telephone);
                     long count = (long)checkCmd.ExecuteScalar();
@@ -131,7 +132,6 @@ namespace Inventory
                         return;
                     }
 
-                    // Delete the user
                     string deleteQuery = "DELETE FROM UserTbl WHERE Uphone = @Telephone";
                     SQLiteCommand cmd = new SQLiteCommand(deleteQuery, Con);
                     cmd.Parameters.AddWithValue("@Telephone", telephone);

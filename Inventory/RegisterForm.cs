@@ -15,7 +15,7 @@ namespace Inventory
 
         /////////////////////////////// SQLite Connect //////////////////////////////////////////
 
-        string connectionString = "Data Source=inventory.db;Version=3;";
+        string connectionString = $@"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "inventory.db")};Version=3;";
 
 
 
@@ -48,13 +48,12 @@ namespace Inventory
 
             try
             {
-                string hashedPassword = HashPassword(Upassword); // Získání hashe hesla
+                string hashedPassword = HashPassword(Upassword); 
 
                 using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
-                    // Ověření, zda uživatel s daným jménem již existuje
                     SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM UserTbl WHERE Uname = @Username", Con);
                     checkCmd.Parameters.AddWithValue("@Username", Uname);
                     int count = Convert.ToInt32(checkCmd.ExecuteScalar());
@@ -65,15 +64,14 @@ namespace Inventory
                         return;
                     }
 
-                    // Přidání nového uživatele s hashem hesla
                     string register = "INSERT INTO UserTbl (Uname, Ufullname, Upassword, Uphone) VALUES (@Username, @FullName, @Password, @Telephone)";
                     SQLiteCommand cmd = new SQLiteCommand(register, Con);
                     cmd.Parameters.AddWithValue("@Username", Uname);
                     cmd.Parameters.AddWithValue("@FullName", Ufullname);
-                    cmd.Parameters.AddWithValue("@Password", hashedPassword); // Použití hashe hesla
+                    cmd.Parameters.AddWithValue("@Password", hashedPassword); 
                     cmd.Parameters.AddWithValue("@Telephone", Uphone);
                     cmd.ExecuteNonQuery();
-                } // Po skončení using bloku se automaticky uzavře připojení.
+                } 
 
                 ResetText();
                 LoginForm loginForm = new LoginForm();
@@ -135,10 +133,8 @@ namespace Inventory
         {
             string text = TelephoneTB.Text;
 
-            // Only numbers and Backspace are allowed
             string cleanedText = new string(text.Where(char.IsDigit).ToArray());
 
-            // Update the text in the TextBox
             if (text != cleanedText)
             {
                 TelephoneTB.Text = cleanedText;
@@ -148,7 +144,13 @@ namespace Inventory
 
         private void MinizedApp_Label_Click(object sender, EventArgs e)
         {
+            this.WindowState = FormWindowState.Minimized;
 
+        }
+
+        private void ExitApp_Label_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
