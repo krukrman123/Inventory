@@ -33,11 +33,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CircularProgressBar" Version="2.8.0.16" />
-    <PackageReference Include="Dapper" Version="2.0.151" />
-    <PackageReference Include="DataGridExtensions" Version="2.5.14" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
-    <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="20.3.0.61" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="DataGridExtensions" Version="2.6.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Syncfusion.Xamarin.SfNumericTextBox" Version="26.2.12" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="WPF.DotNet.IoC" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>

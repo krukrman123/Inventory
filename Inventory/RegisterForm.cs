@@ -1,16 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Configuration;
+﻿using System;
+using System.Data.SQLite;
 using System.Security.Cryptography;
-
+using System.Text;
+using System.Windows.Forms;
 
 namespace Inventory
 {
@@ -21,16 +13,16 @@ namespace Inventory
             InitializeComponent();
         }
 
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
+
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
 
 
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
 
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
 
 
         #region RegisterSystem
-
 
         public static string HashPassword(string password)
         {
@@ -40,9 +32,6 @@ namespace Inventory
                 return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
             }
         }
-
-
-
 
         private void REGISTER_Click(object sender, EventArgs e)
         {
@@ -61,14 +50,14 @@ namespace Inventory
             {
                 string hashedPassword = HashPassword(Upassword); // Získání hashe hesla
 
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     // Ověření, zda uživatel s daným jménem již existuje
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM UserTbl WHERE Uname = @Username", Con);
+                    SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM UserTbl WHERE Uname = @Username", Con);
                     checkCmd.Parameters.AddWithValue("@Username", Uname);
-                    int count = (int)checkCmd.ExecuteScalar();
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                     if (count == 1)
                     {
@@ -78,7 +67,7 @@ namespace Inventory
 
                     // Přidání nového uživatele s hashem hesla
                     string register = "INSERT INTO UserTbl (Uname, Ufullname, Upassword, Uphone) VALUES (@Username, @FullName, @Password, @Telephone)";
-                    SqlCommand cmd = new SqlCommand(register, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(register, Con);
                     cmd.Parameters.AddWithValue("@Username", Uname);
                     cmd.Parameters.AddWithValue("@FullName", Ufullname);
                     cmd.Parameters.AddWithValue("@Password", hashedPassword); // Použití hashe hesla
@@ -91,7 +80,7 @@ namespace Inventory
                 loginForm.Show();
                 this.Close();
 
-                MessageBox.Show("Your account has been created successfully.", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Your account has been created successfully.", "Registration succeeded", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -99,13 +88,7 @@ namespace Inventory
             }
         }
 
-
-
-
         #endregion
-
-
-
 
         #region Exit/Minimized
 
@@ -114,17 +97,12 @@ namespace Inventory
             Application.Exit();
         }
 
-
-
         private void MinimizedLabel_TB_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
 
-
         #endregion
-
 
         private void BackToRegister_Click(object sender, EventArgs e)
         {
@@ -132,7 +110,6 @@ namespace Inventory
             this.Hide();
             Load.Show();
         }
-
 
         private void ShowPassword_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -146,8 +123,6 @@ namespace Inventory
             }
         }
 
-
-
         private void btn_clear_Click(object sender, EventArgs e)
         {
             UsernameTB.Text = "";
@@ -156,14 +131,9 @@ namespace Inventory
             TelephoneTB.Text = "";
         }
 
-
-      
-
-
         private void TelephoneTB_TextChanged(object sender, EventArgs e)
         {
             string text = TelephoneTB.Text;
-
 
             // Only numbers and Backspace are allowed
             string cleanedText = new string(text.Where(char.IsDigit).ToArray());
@@ -176,20 +146,9 @@ namespace Inventory
             }
         }
 
-     
-       
+        private void MinizedApp_Label_Click(object sender, EventArgs e)
+        {
+
+        }
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-

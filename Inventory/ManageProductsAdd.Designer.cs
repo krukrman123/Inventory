@@ -281,7 +281,7 @@
             // 
             productIDTB.BackColor = SystemColors.GrayText;
             productIDTB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
-            productIDTB.ForeColor = SystemColors.ControlDark;
+            productIDTB.ForeColor = SystemColors.Control;
             productIDTB.Location = new Point(182, 224);
             productIDTB.Margin = new Padding(2, 3, 2, 3);
             productIDTB.Name = "productIDTB";

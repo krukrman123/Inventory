@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HomeFrom));
             panel1 = new Panel();
+            userLabel = new Label();
             label4 = new Label();
             tableLayoutPanel2 = new TableLayoutPanel();
             MinimizedApp_Label = new Label();
@@ -61,13 +62,25 @@
             // panel1
             // 
             panel1.BackColor = SystemColors.ControlText;
+            panel1.Controls.Add(userLabel);
             panel1.Controls.Add(label4);
             panel1.Controls.Add(tableLayoutPanel2);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
+            panel1.Margin = new Padding(3, 4, 3, 4);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1449, 68);
+            panel1.Size = new Size(1656, 91);
             panel1.TabIndex = 0;
+            // 
+            // userLabel
+            // 
+            userLabel.AutoSize = true;
+            userLabel.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            userLabel.Location = new Point(12, 9);
+            userLabel.Name = "userLabel";
+            userLabel.Size = new Size(70, 28);
+            userLabel.TabIndex = 17;
+            userLabel.Text = "label1";
             // 
             // label4
             // 
@@ -76,10 +89,10 @@
             label4.BackColor = Color.Transparent;
             label4.Font = new Font("Segoe UI", 22F, FontStyle.Regular, GraphicsUnit.Point);
             label4.ForeColor = SystemColors.HighlightText;
-            label4.Location = new Point(459, 16);
+            label4.Location = new Point(525, 21);
             label4.Margin = new Padding(2, 0, 2, 0);
             label4.Name = "label4";
-            label4.Size = new Size(501, 41);
+            label4.Size = new Size(618, 50);
             label4.TabIndex = 16;
             label4.Text = "INVENTORY MANAGEMENT SYSTEM";
             // 
@@ -91,11 +104,12 @@
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             tableLayoutPanel2.Controls.Add(MinimizedApp_Label, 0, 0);
             tableLayoutPanel2.Controls.Add(ExitApp_Label, 1, 0);
-            tableLayoutPanel2.Location = new Point(1371, 12);
+            tableLayoutPanel2.Location = new Point(1567, 16);
+            tableLayoutPanel2.Margin = new Padding(3, 4, 3, 4);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 1;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel2.Size = new Size(66, 38);
+            tableLayoutPanel2.Size = new Size(75, 51);
             tableLayoutPanel2.TabIndex = 15;
             // 
             // MinimizedApp_Label
@@ -104,10 +118,10 @@
             MinimizedApp_Label.AutoSize = true;
             MinimizedApp_Label.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
             MinimizedApp_Label.ForeColor = Color.White;
-            MinimizedApp_Label.Location = new Point(5, 4);
+            MinimizedApp_Label.Location = new Point(4, 6);
             MinimizedApp_Label.Margin = new Padding(2, 0, 2, 0);
             MinimizedApp_Label.Name = "MinimizedApp_Label";
-            MinimizedApp_Label.Size = new Size(22, 30);
+            MinimizedApp_Label.Size = new Size(29, 38);
             MinimizedApp_Label.TabIndex = 13;
             MinimizedApp_Label.Text = "_";
             MinimizedApp_Label.Click += MinimizedApp_Label_Click;
@@ -117,9 +131,9 @@
             ExitApp_Label.Anchor = AnchorStyles.None;
             ExitApp_Label.AutoSize = true;
             ExitApp_Label.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point);
-            ExitApp_Label.Location = new Point(36, 3);
+            ExitApp_Label.Location = new Point(40, 5);
             ExitApp_Label.Name = "ExitApp_Label";
-            ExitApp_Label.Size = new Size(27, 32);
+            ExitApp_Label.Size = new Size(32, 41);
             ExitApp_Label.TabIndex = 2;
             ExitApp_Label.Text = "X";
             ExitApp_Label.Click += ExitApp_Label_Click;
@@ -130,9 +144,9 @@
             ProductsTB.AutoSize = true;
             ProductsTB.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             ProductsTB.ForeColor = SystemColors.ActiveCaptionText;
-            ProductsTB.Location = new Point(83, 14);
+            ProductsTB.Location = new Point(91, 45);
             ProductsTB.Name = "ProductsTB";
-            ProductsTB.Size = new Size(97, 30);
+            ProductsTB.Size = new Size(120, 37);
             ProductsTB.TabIndex = 1;
             ProductsTB.Text = "Products";
             // 
@@ -142,9 +156,9 @@
             CustomersTB.AutoSize = true;
             CustomersTB.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             CustomersTB.ForeColor = SystemColors.ActiveCaptionText;
-            CustomersTB.Location = new Point(602, 14);
+            CustomersTB.Location = new Point(684, 45);
             CustomersTB.Name = "CustomersTB";
-            CustomersTB.Size = new Size(116, 30);
+            CustomersTB.Size = new Size(142, 37);
             CustomersTB.TabIndex = 2;
             CustomersTB.Text = "Customers";
             // 
@@ -154,9 +168,9 @@
             OrdersTB.AutoSize = true;
             OrdersTB.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             OrdersTB.ForeColor = SystemColors.ActiveCaptionText;
-            OrdersTB.Location = new Point(1148, 14);
+            OrdersTB.Location = new Point(1311, 45);
             OrdersTB.Name = "OrdersTB";
-            OrdersTB.Size = new Size(80, 30);
+            OrdersTB.Size = new Size(96, 37);
             OrdersTB.TabIndex = 3;
             OrdersTB.Text = "Orders";
             // 
@@ -166,9 +180,9 @@
             UsersTB.AutoSize = true;
             UsersTB.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             UsersTB.ForeColor = SystemColors.ActiveCaptionText;
-            UsersTB.Location = new Point(891, 14);
+            UsersTB.Location = new Point(1016, 45);
             UsersTB.Name = "UsersTB";
-            UsersTB.Size = new Size(66, 30);
+            UsersTB.Size = new Size(81, 37);
             UsersTB.TabIndex = 4;
             UsersTB.Text = "Users";
             // 
@@ -178,9 +192,9 @@
             CategoriesTB.AutoSize = true;
             CategoriesTB.Font = new Font("Segoe UI", 16F, FontStyle.Regular, GraphicsUnit.Point);
             CategoriesTB.ForeColor = SystemColors.ActiveCaptionText;
-            CategoriesTB.Location = new Point(337, 14);
+            CategoriesTB.Location = new Point(381, 45);
             CategoriesTB.Name = "CategoriesTB";
-            CategoriesTB.Size = new Size(117, 30);
+            CategoriesTB.Size = new Size(144, 37);
             CategoriesTB.TabIndex = 5;
             CategoriesTB.Text = "Categories";
             // 
@@ -189,9 +203,10 @@
             btn_Logout.BackColor = Color.FromArgb(192, 0, 0);
             btn_Logout.FlatStyle = FlatStyle.Popup;
             btn_Logout.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
-            btn_Logout.Location = new Point(1275, 518);
+            btn_Logout.Location = new Point(1457, 691);
+            btn_Logout.Margin = new Padding(3, 4, 3, 4);
             btn_Logout.Name = "btn_Logout";
-            btn_Logout.Size = new Size(133, 41);
+            btn_Logout.Size = new Size(152, 55);
             btn_Logout.TabIndex = 6;
             btn_Logout.Text = "Logout";
             btn_Logout.UseVisualStyleBackColor = false;
@@ -203,10 +218,10 @@
             Products.BackColor = SystemColors.GrayText;
             Products.ErrorImage = (Image)resources.GetObject("Products.ErrorImage");
             Products.Image = Properties.Resources.Product;
-            Products.Location = new Point(27, 61);
-            Products.Margin = new Padding(2);
+            Products.Location = new Point(31, 131);
+            Products.Margin = new Padding(2, 3, 2, 3);
             Products.Name = "Products";
-            Products.Size = new Size(210, 137);
+            Products.Size = new Size(240, 183);
             Products.SizeMode = PictureBoxSizeMode.StretchImage;
             Products.TabIndex = 7;
             Products.TabStop = false;
@@ -216,10 +231,10 @@
             // 
             Customers.Anchor = AnchorStyles.None;
             Customers.Image = Properties.Resources.Customers;
-            Customers.Location = new Point(555, 61);
-            Customers.Margin = new Padding(2);
+            Customers.Location = new Point(635, 131);
+            Customers.Margin = new Padding(2, 3, 2, 3);
             Customers.Name = "Customers";
-            Customers.Size = new Size(210, 137);
+            Customers.Size = new Size(240, 183);
             Customers.SizeMode = PictureBoxSizeMode.CenterImage;
             Customers.TabIndex = 8;
             Customers.TabStop = false;
@@ -229,10 +244,10 @@
             // 
             Categories.Anchor = AnchorStyles.None;
             Categories.Image = Properties.Resources.Categories;
-            Categories.Location = new Point(291, 61);
-            Categories.Margin = new Padding(2);
+            Categories.Location = new Point(333, 131);
+            Categories.Margin = new Padding(2, 3, 2, 3);
             Categories.Name = "Categories";
-            Categories.Size = new Size(210, 137);
+            Categories.Size = new Size(240, 183);
             Categories.SizeMode = PictureBoxSizeMode.StretchImage;
             Categories.TabIndex = 9;
             Categories.TabStop = false;
@@ -242,10 +257,10 @@
             // 
             Users.Anchor = AnchorStyles.None;
             Users.Image = Properties.Resources.user;
-            Users.Location = new Point(819, 61);
-            Users.Margin = new Padding(2);
+            Users.Location = new Point(937, 131);
+            Users.Margin = new Padding(2, 3, 2, 3);
             Users.Name = "Users";
-            Users.Size = new Size(210, 137);
+            Users.Size = new Size(240, 183);
             Users.SizeMode = PictureBoxSizeMode.StretchImage;
             Users.TabIndex = 10;
             Users.TabStop = false;
@@ -255,10 +270,10 @@
             // 
             Orders.Anchor = AnchorStyles.None;
             Orders.Image = Properties.Resources.order;
-            Orders.Location = new Point(1083, 61);
-            Orders.Margin = new Padding(2);
+            Orders.Location = new Point(1239, 131);
+            Orders.Margin = new Padding(2, 3, 2, 3);
             Orders.Name = "Orders";
-            Orders.Size = new Size(210, 137);
+            Orders.Size = new Size(240, 183);
             Orders.SizeMode = PictureBoxSizeMode.StretchImage;
             Orders.TabIndex = 11;
             Orders.TabStop = false;
@@ -270,10 +285,10 @@
             label3.BackColor = Color.Transparent;
             label3.Font = new Font("Lucida Console", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             label3.ForeColor = SystemColors.Desktop;
-            label3.Location = new Point(1332, 607);
+            label3.Location = new Point(1522, 809);
             label3.Margin = new Padding(2, 0, 2, 0);
             label3.Name = "label3";
-            label3.Size = new Size(106, 13);
+            label3.Size = new Size(129, 17);
             label3.TabIndex = 2;
             label3.Text = "Version 1.0";
             // 
@@ -296,30 +311,29 @@
             tableLayoutPanel1.Controls.Add(ProductsTB, 0, 0);
             tableLayoutPanel1.Controls.Add(UsersTB, 3, 0);
             tableLayoutPanel1.Controls.Add(OrdersTB, 4, 0);
-            tableLayoutPanel1.Location = new Point(63, 107);
-            tableLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
+            tableLayoutPanel1.Location = new Point(72, 128);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 142F));
-            tableLayoutPanel1.Size = new Size(1321, 201);
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 189F));
+            tableLayoutPanel1.Size = new Size(1510, 317);
             tableLayoutPanel1.TabIndex = 13;
             // 
             // UserLogged
             // 
             UserLogged.AutoSize = true;
             UserLogged.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            UserLogged.Location = new Point(27, 80);
+            UserLogged.Location = new Point(31, 107);
             UserLogged.Name = "UserLogged";
-            UserLogged.Size = new Size(0, 25);
+            UserLogged.Size = new Size(0, 31);
             UserLogged.TabIndex = 14;
             // 
             // HomeFrom
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.GrayText;
-            ClientSize = new Size(1449, 629);
+            ClientSize = new Size(1656, 839);
             Controls.Add(label3);
             Controls.Add(UserLogged);
             Controls.Add(tableLayoutPanel1);
@@ -327,6 +341,7 @@
             Controls.Add(panel1);
             ForeColor = SystemColors.Control;
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(3, 4, 3, 4);
             Name = "HomeFrom";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "HomeFrom";
@@ -366,5 +381,6 @@
         private TableLayoutPanel tableLayoutPanel2;
         private Label ExitApp_Label;
         private Label label4;
+        private Label userLabel;
     }
 }

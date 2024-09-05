@@ -86,9 +86,9 @@
             panel1.Controls.Add(label2);
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(2);
+            panel1.Margin = new Padding(2, 3, 2, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1429, 90);
+            panel1.Size = new Size(1633, 120);
             panel1.TabIndex = 1;
             // 
             // MinimizedApp_Label
@@ -96,10 +96,10 @@
             MinimizedApp_Label.AutoSize = true;
             MinimizedApp_Label.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point);
             MinimizedApp_Label.ForeColor = Color.White;
-            MinimizedApp_Label.Location = new Point(1366, 4);
+            MinimizedApp_Label.Location = new Point(1561, 5);
             MinimizedApp_Label.Margin = new Padding(2, 0, 2, 0);
             MinimizedApp_Label.Name = "MinimizedApp_Label";
-            MinimizedApp_Label.Size = new Size(22, 30);
+            MinimizedApp_Label.Size = new Size(29, 38);
             MinimizedApp_Label.TabIndex = 38;
             MinimizedApp_Label.Text = "_";
             MinimizedApp_Label.Click += MinimizedApp_Label_Click;
@@ -109,10 +109,10 @@
             ExitApp_Label.AutoSize = true;
             ExitApp_Label.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             ExitApp_Label.ForeColor = Color.White;
-            ExitApp_Label.Location = new Point(1395, 9);
+            ExitApp_Label.Location = new Point(1594, 12);
             ExitApp_Label.Margin = new Padding(2, 0, 2, 0);
             ExitApp_Label.Name = "ExitApp_Label";
-            ExitApp_Label.Size = new Size(23, 25);
+            ExitApp_Label.Size = new Size(28, 32);
             ExitApp_Label.TabIndex = 2;
             ExitApp_Label.Text = "X";
             ExitApp_Label.Click += ExitApp_Label_Click;
@@ -122,10 +122,10 @@
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 14F, FontStyle.Regular, GraphicsUnit.Point);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(11, 9);
+            label2.Location = new Point(13, 12);
             label2.Margin = new Padding(2, 0, 2, 0);
             label2.Name = "label2";
-            label2.Size = new Size(175, 25);
+            label2.Size = new Size(221, 32);
             label2.TabIndex = 1;
             label2.Text = "Manage Customers";
             // 
@@ -134,10 +134,10 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 21.75F, FontStyle.Bold, GraphicsUnit.Point);
             label4.ForeColor = SystemColors.ControlText;
-            label4.Location = new Point(709, 105);
+            label4.Location = new Point(810, 140);
             label4.Margin = new Padding(2, 0, 2, 0);
             label4.Name = "label4";
-            label4.Size = new Size(237, 40);
+            label4.Size = new Size(305, 50);
             label4.TabIndex = 14;
             label4.Text = "CUSTOMER LIST";
             // 
@@ -146,13 +146,13 @@
             CustomerGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             CustomerGV.BackgroundColor = SystemColors.ButtonHighlight;
             CustomerGV.ColumnHeadersHeight = 34;
-            CustomerGV.Location = new Point(305, 165);
-            CustomerGV.Margin = new Padding(2);
+            CustomerGV.Location = new Point(349, 220);
+            CustomerGV.Margin = new Padding(2, 3, 2, 3);
             CustomerGV.Name = "CustomerGV";
             CustomerGV.RowHeadersWidth = 62;
             CustomerGV.RowTemplate.Height = 33;
             CustomerGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            CustomerGV.Size = new Size(1083, 460);
+            CustomerGV.Size = new Size(1238, 613);
             CustomerGV.TabIndex = 13;
             CustomerGV.CellContentClick += CustomerGV_CellContentClick;
             // 
@@ -161,9 +161,9 @@
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             label7.ForeColor = SystemColors.ActiveCaptionText;
-            label7.Location = new Point(295, 807);
+            label7.Location = new Point(337, 1076);
             label7.Name = "label7";
-            label7.Size = new Size(132, 21);
+            label7.Size = new Size(161, 28);
             label7.TabIndex = 23;
             label7.Text = "CustomerPhone";
             // 
@@ -172,9 +172,9 @@
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             label6.ForeColor = SystemColors.ActiveCaptionText;
-            label6.Location = new Point(295, 741);
+            label6.Location = new Point(337, 988);
             label6.Name = "label6";
-            label6.Size = new Size(129, 21);
+            label6.Size = new Size(158, 28);
             label6.TabIndex = 22;
             label6.Text = "CustomerName";
             // 
@@ -183,9 +183,9 @@
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point);
             label5.ForeColor = SystemColors.ActiveCaptionText;
-            label5.Location = new Point(295, 672);
+            label5.Location = new Point(337, 896);
             label5.Name = "label5";
-            label5.Size = new Size(98, 21);
+            label5.Size = new Size(120, 28);
             label5.TabIndex = 21;
             label5.Text = "CustomerId";
             // 
@@ -194,10 +194,10 @@
             customerPhoneTB.BackColor = SystemColors.ButtonHighlight;
             customerPhoneTB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             customerPhoneTB.ForeColor = SystemColors.ActiveCaptionText;
-            customerPhoneTB.Location = new Point(447, 807);
-            customerPhoneTB.Margin = new Padding(2);
+            customerPhoneTB.Location = new Point(511, 1076);
+            customerPhoneTB.Margin = new Padding(2, 3, 2, 3);
             customerPhoneTB.Name = "customerPhoneTB";
-            customerPhoneTB.Size = new Size(298, 29);
+            customerPhoneTB.Size = new Size(340, 34);
             customerPhoneTB.TabIndex = 19;
             customerPhoneTB.KeyPress += customerPhoneTB_KeyPress;
             // 
@@ -206,10 +206,10 @@
             customerNameTB.BackColor = SystemColors.ButtonHighlight;
             customerNameTB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             customerNameTB.ForeColor = SystemColors.ActiveCaptionText;
-            customerNameTB.Location = new Point(447, 736);
-            customerNameTB.Margin = new Padding(2);
+            customerNameTB.Location = new Point(511, 981);
+            customerNameTB.Margin = new Padding(2, 3, 2, 3);
             customerNameTB.Name = "customerNameTB";
-            customerNameTB.Size = new Size(298, 29);
+            customerNameTB.Size = new Size(340, 34);
             customerNameTB.TabIndex = 18;
             // 
             // customerIdTB
@@ -217,11 +217,11 @@
             customerIdTB.BackColor = SystemColors.ButtonHighlight;
             customerIdTB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point);
             customerIdTB.ForeColor = SystemColors.ActiveCaptionText;
-            customerIdTB.Location = new Point(447, 670);
-            customerIdTB.Margin = new Padding(2);
+            customerIdTB.Location = new Point(511, 893);
+            customerIdTB.Margin = new Padding(2, 3, 2, 3);
             customerIdTB.Name = "customerIdTB";
             customerIdTB.ReadOnly = true;
-            customerIdTB.Size = new Size(298, 29);
+            customerIdTB.Size = new Size(340, 34);
             customerIdTB.TabIndex = 17;
             customerIdTB.KeyPress += customerIdTB_KeyPress;
             // 
@@ -230,10 +230,10 @@
             btn_home.BackColor = Color.FromArgb(192, 0, 0);
             btn_home.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
             btn_home.ForeColor = SystemColors.ControlLightLight;
-            btn_home.Location = new Point(1311, 876);
-            btn_home.Margin = new Padding(2);
+            btn_home.Location = new Point(1498, 1168);
+            btn_home.Margin = new Padding(2, 3, 2, 3);
             btn_home.Name = "btn_home";
-            btn_home.Size = new Size(104, 49);
+            btn_home.Size = new Size(119, 65);
             btn_home.TabIndex = 28;
             btn_home.Text = "Home";
             btn_home.UseVisualStyleBackColor = false;
@@ -244,24 +244,24 @@
             btn_delete.BackColor = Color.FromArgb(192, 0, 0);
             btn_delete.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
             btn_delete.ForeColor = SystemColors.ControlLightLight;
-            btn_delete.Location = new Point(641, 876);
-            btn_delete.Margin = new Padding(2);
+            btn_delete.Location = new Point(733, 1168);
+            btn_delete.Margin = new Padding(2, 3, 2, 3);
             btn_delete.Name = "btn_delete";
-            btn_delete.Size = new Size(104, 49);
+            btn_delete.Size = new Size(119, 65);
             btn_delete.TabIndex = 27;
             btn_delete.Text = "Delete";
             btn_delete.UseVisualStyleBackColor = false;
-            btn_delete.Click += btn_delete_Click_1;
+            btn_delete.Click += btn_delete_Click;
             // 
             // btn_edit
             // 
             btn_edit.BackColor = Color.FromArgb(192, 0, 0);
             btn_edit.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
             btn_edit.ForeColor = SystemColors.ControlLightLight;
-            btn_edit.Location = new Point(474, 876);
-            btn_edit.Margin = new Padding(2);
+            btn_edit.Location = new Point(542, 1168);
+            btn_edit.Margin = new Padding(2, 3, 2, 3);
             btn_edit.Name = "btn_edit";
-            btn_edit.Size = new Size(104, 49);
+            btn_edit.Size = new Size(119, 65);
             btn_edit.TabIndex = 26;
             btn_edit.Text = "Edit";
             btn_edit.UseVisualStyleBackColor = false;
@@ -272,10 +272,10 @@
             btn_add.BackColor = Color.FromArgb(192, 0, 0);
             btn_add.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point);
             btn_add.ForeColor = SystemColors.ControlLightLight;
-            btn_add.Location = new Point(298, 876);
-            btn_add.Margin = new Padding(2);
+            btn_add.Location = new Point(341, 1168);
+            btn_add.Margin = new Padding(2, 3, 2, 3);
             btn_add.Name = "btn_add";
-            btn_add.Size = new Size(104, 49);
+            btn_add.Size = new Size(119, 65);
             btn_add.TabIndex = 25;
             btn_add.Text = "Add";
             btn_add.UseVisualStyleBackColor = false;
@@ -287,13 +287,13 @@
             dataGridView1.BackgroundColor = Color.MediumVioletRed;
             dataGridView1.BorderStyle = BorderStyle.None;
             dataGridView1.ColumnHeadersHeight = 34;
-            dataGridView1.Location = new Point(1189, 672);
-            dataGridView1.Margin = new Padding(2);
+            dataGridView1.Location = new Point(1359, 896);
+            dataGridView1.Margin = new Padding(2, 3, 2, 3);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 62;
             dataGridView1.RowTemplate.Height = 33;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.Size = new Size(199, 106);
+            dataGridView1.Size = new Size(227, 141);
             dataGridView1.TabIndex = 29;
             // 
             // dataGridView3
@@ -303,13 +303,13 @@
             dataGridView3.BorderStyle = BorderStyle.None;
             dataGridView3.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
             dataGridView3.ColumnHeadersHeight = 34;
-            dataGridView3.Location = new Point(918, 809);
-            dataGridView3.Margin = new Padding(2);
+            dataGridView3.Location = new Point(1049, 1079);
+            dataGridView3.Margin = new Padding(2, 3, 2, 3);
             dataGridView3.Name = "dataGridView3";
             dataGridView3.RowHeadersWidth = 62;
             dataGridView3.RowTemplate.Height = 33;
             dataGridView3.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView3.Size = new Size(256, 106);
+            dataGridView3.Size = new Size(293, 141);
             dataGridView3.TabIndex = 31;
             // 
             // label8
@@ -318,9 +318,9 @@
             label8.BackColor = Color.MediumVioletRed;
             label8.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             label8.ForeColor = SystemColors.ButtonHighlight;
-            label8.Location = new Point(1189, 672);
+            label8.Location = new Point(1359, 896);
             label8.Name = "label8";
-            label8.Size = new Size(132, 25);
+            label8.Size = new Size(167, 32);
             label8.TabIndex = 32;
             label8.Text = "Orders Count";
             // 
@@ -330,9 +330,9 @@
             OrderLabel.BackColor = Color.MediumVioletRed;
             OrderLabel.Font = new Font("Segoe UI", 22F, FontStyle.Bold, GraphicsUnit.Point);
             OrderLabel.ForeColor = SystemColors.ButtonHighlight;
-            OrderLabel.Location = new Point(1225, 708);
+            OrderLabel.Location = new Point(1400, 944);
             OrderLabel.Name = "OrderLabel";
-            OrderLabel.Size = new Size(113, 41);
+            OrderLabel.Size = new Size(139, 50);
             OrderLabel.TabIndex = 33;
             OrderLabel.Text = "Orders";
             // 
@@ -342,9 +342,9 @@
             label10.BackColor = Color.DodgerBlue;
             label10.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             label10.ForeColor = SystemColors.ButtonHighlight;
-            label10.Location = new Point(918, 672);
+            label10.Location = new Point(1049, 896);
             label10.Name = "label10";
-            label10.Size = new Size(138, 25);
+            label10.Size = new Size(176, 32);
             label10.TabIndex = 34;
             label10.Text = "Orders Amout";
             // 
@@ -354,9 +354,9 @@
             AmoutLabel.BackColor = Color.DodgerBlue;
             AmoutLabel.Font = new Font("Segoe UI", 21.75F, FontStyle.Bold, GraphicsUnit.Point);
             AmoutLabel.ForeColor = SystemColors.ButtonHighlight;
-            AmoutLabel.Location = new Point(950, 708);
+            AmoutLabel.Location = new Point(1086, 944);
             AmoutLabel.Name = "AmoutLabel";
-            AmoutLabel.Size = new Size(111, 40);
+            AmoutLabel.Size = new Size(141, 50);
             AmoutLabel.TabIndex = 35;
             AmoutLabel.Text = "Amout";
             // 
@@ -366,9 +366,9 @@
             label12.BackColor = Color.FromArgb(192, 192, 0);
             label12.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             label12.ForeColor = SystemColors.ButtonHighlight;
-            label12.Location = new Point(978, 813);
+            label12.Location = new Point(1118, 1084);
             label12.Name = "label12";
-            label12.Size = new Size(150, 25);
+            label12.Size = new Size(192, 32);
             label12.TabIndex = 36;
             label12.Text = "Last Order Date";
             // 
@@ -378,9 +378,9 @@
             DateLabel.BackColor = Color.FromArgb(192, 192, 0);
             DateLabel.Font = new Font("Segoe UI", 16F, FontStyle.Bold, GraphicsUnit.Point);
             DateLabel.ForeColor = SystemColors.ButtonHighlight;
-            DateLabel.Location = new Point(924, 858);
+            DateLabel.Location = new Point(1056, 1144);
             DateLabel.Name = "DateLabel";
-            DateLabel.Size = new Size(62, 30);
+            DateLabel.Size = new Size(78, 37);
             DateLabel.TabIndex = 37;
             DateLabel.Text = "Date";
             // 
@@ -390,13 +390,13 @@
             dataGridView2.BackgroundColor = Color.DodgerBlue;
             dataGridView2.BorderStyle = BorderStyle.None;
             dataGridView2.ColumnHeadersHeight = 34;
-            dataGridView2.Location = new Point(918, 672);
-            dataGridView2.Margin = new Padding(2);
+            dataGridView2.Location = new Point(1049, 896);
+            dataGridView2.Margin = new Padding(2, 3, 2, 3);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.RowHeadersWidth = 62;
             dataGridView2.RowTemplate.Height = 33;
             dataGridView2.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView2.Size = new Size(199, 106);
+            dataGridView2.Size = new Size(227, 141);
             dataGridView2.TabIndex = 30;
             // 
             // label1
@@ -405,10 +405,10 @@
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Lucida Console", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = SystemColors.Desktop;
-            label1.Location = new Point(1311, 937);
+            label1.Location = new Point(1498, 1249);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(106, 13);
+            label1.Size = new Size(129, 17);
             label1.TabIndex = 38;
             label1.Text = "Version 1.0";
             // 
@@ -426,17 +426,19 @@
             panel3.Controls.Add(pictureBox1);
             panel3.Controls.Add(CategoriesMenu_BT);
             panel3.Dock = DockStyle.Left;
-            panel3.Location = new Point(0, 90);
+            panel3.Location = new Point(0, 120);
+            panel3.Margin = new Padding(3, 4, 3, 4);
             panel3.Name = "panel3";
-            panel3.Size = new Size(267, 870);
+            panel3.Size = new Size(305, 1160);
             panel3.TabIndex = 39;
             // 
             // pictureBox5
             // 
             pictureBox5.Image = Properties.Resources.user;
-            pictureBox5.Location = new Point(3, 318);
+            pictureBox5.Location = new Point(3, 424);
+            pictureBox5.Margin = new Padding(3, 4, 3, 4);
             pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(73, 42);
+            pictureBox5.Size = new Size(83, 56);
             pictureBox5.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox5.TabIndex = 9;
             pictureBox5.TabStop = false;
@@ -444,9 +446,10 @@
             // pictureBox4
             // 
             pictureBox4.Image = Properties.Resources.Product;
-            pictureBox4.Location = new Point(3, 240);
+            pictureBox4.Location = new Point(3, 320);
+            pictureBox4.Margin = new Padding(3, 4, 3, 4);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(73, 42);
+            pictureBox4.Size = new Size(83, 56);
             pictureBox4.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox4.TabIndex = 8;
             pictureBox4.TabStop = false;
@@ -454,9 +457,10 @@
             // pictureBox3
             // 
             pictureBox3.Image = Properties.Resources.order;
-            pictureBox3.Location = new Point(3, 164);
+            pictureBox3.Location = new Point(3, 219);
+            pictureBox3.Margin = new Padding(3, 4, 3, 4);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(73, 42);
+            pictureBox3.Size = new Size(83, 56);
             pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox3.TabIndex = 7;
             pictureBox3.TabStop = false;
@@ -464,9 +468,10 @@
             // pictureBox2
             // 
             pictureBox2.Image = Properties.Resources.Customers;
-            pictureBox2.Location = new Point(3, 89);
+            pictureBox2.Location = new Point(3, 119);
+            pictureBox2.Margin = new Padding(3, 4, 3, 4);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(73, 42);
+            pictureBox2.Size = new Size(83, 56);
             pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox2.TabIndex = 6;
             pictureBox2.TabStop = false;
@@ -477,9 +482,10 @@
             UserMenu_BT.Dock = DockStyle.Top;
             UserMenu_BT.FlatStyle = FlatStyle.Flat;
             UserMenu_BT.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            UserMenu_BT.Location = new Point(0, 300);
+            UserMenu_BT.Location = new Point(0, 400);
+            UserMenu_BT.Margin = new Padding(3, 4, 3, 4);
             UserMenu_BT.Name = "UserMenu_BT";
-            UserMenu_BT.Size = new Size(267, 75);
+            UserMenu_BT.Size = new Size(305, 100);
             UserMenu_BT.TabIndex = 5;
             UserMenu_BT.Text = "Users";
             UserMenu_BT.UseVisualStyleBackColor = false;
@@ -491,9 +497,10 @@
             ProductsMenu_BT.Dock = DockStyle.Top;
             ProductsMenu_BT.FlatStyle = FlatStyle.Flat;
             ProductsMenu_BT.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            ProductsMenu_BT.Location = new Point(0, 225);
+            ProductsMenu_BT.Location = new Point(0, 300);
+            ProductsMenu_BT.Margin = new Padding(3, 4, 3, 4);
             ProductsMenu_BT.Name = "ProductsMenu_BT";
-            ProductsMenu_BT.Size = new Size(267, 75);
+            ProductsMenu_BT.Size = new Size(305, 100);
             ProductsMenu_BT.TabIndex = 4;
             ProductsMenu_BT.Text = "Product";
             ProductsMenu_BT.UseVisualStyleBackColor = false;
@@ -505,9 +512,10 @@
             OrderMenu_BT.Dock = DockStyle.Top;
             OrderMenu_BT.FlatStyle = FlatStyle.Flat;
             OrderMenu_BT.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            OrderMenu_BT.Location = new Point(0, 150);
+            OrderMenu_BT.Location = new Point(0, 200);
+            OrderMenu_BT.Margin = new Padding(3, 4, 3, 4);
             OrderMenu_BT.Name = "OrderMenu_BT";
-            OrderMenu_BT.Size = new Size(267, 75);
+            OrderMenu_BT.Size = new Size(305, 100);
             OrderMenu_BT.TabIndex = 3;
             OrderMenu_BT.Text = "Order";
             OrderMenu_BT.UseVisualStyleBackColor = false;
@@ -519,9 +527,10 @@
             CustomerMenu_BT.Dock = DockStyle.Top;
             CustomerMenu_BT.FlatStyle = FlatStyle.Flat;
             CustomerMenu_BT.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
-            CustomerMenu_BT.Location = new Point(0, 75);
+            CustomerMenu_BT.Location = new Point(0, 100);
+            CustomerMenu_BT.Margin = new Padding(3, 4, 3, 4);
             CustomerMenu_BT.Name = "CustomerMenu_BT";
-            CustomerMenu_BT.Size = new Size(267, 75);
+            CustomerMenu_BT.Size = new Size(305, 100);
             CustomerMenu_BT.TabIndex = 2;
             CustomerMenu_BT.Text = "Customers";
             CustomerMenu_BT.UseVisualStyleBackColor = false;
@@ -531,9 +540,10 @@
             // 
             pictureBox1.BackColor = SystemColors.GrayText;
             pictureBox1.Image = Properties.Resources.Categories;
-            pictureBox1.Location = new Point(3, 13);
+            pictureBox1.Location = new Point(3, 17);
+            pictureBox1.Margin = new Padding(3, 4, 3, 4);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(73, 42);
+            pictureBox1.Size = new Size(83, 56);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
@@ -545,8 +555,9 @@
             CategoriesMenu_BT.FlatStyle = FlatStyle.Flat;
             CategoriesMenu_BT.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point);
             CategoriesMenu_BT.Location = new Point(0, 0);
+            CategoriesMenu_BT.Margin = new Padding(3, 4, 3, 4);
             CategoriesMenu_BT.Name = "CategoriesMenu_BT";
-            CategoriesMenu_BT.Size = new Size(267, 75);
+            CategoriesMenu_BT.Size = new Size(305, 100);
             CategoriesMenu_BT.TabIndex = 0;
             CategoriesMenu_BT.Text = "Categories";
             CategoriesMenu_BT.UseVisualStyleBackColor = false;
@@ -554,11 +565,11 @@
             // 
             // ManageCustomers
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveBorder;
             BackgroundImageLayout = ImageLayout.Center;
-            ClientSize = new Size(1429, 960);
+            ClientSize = new Size(1633, 1280);
             Controls.Add(panel3);
             Controls.Add(label1);
             Controls.Add(DateLabel);
@@ -584,6 +595,7 @@
             Controls.Add(CustomerGV);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(3, 4, 3, 4);
             Name = "ManageCustomers";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "ManageCustomers";

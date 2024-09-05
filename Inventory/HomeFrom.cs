@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Inventory.Class;
+using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SQLite; 
 using System.Windows.Forms;
-using Microsoft.Data.SqlClient;
-using System.Drawing;
-using System.Globalization;
-using System.Configuration;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Inventory
 {
@@ -22,27 +13,19 @@ namespace Inventory
         public HomeFrom()
         {
             InitializeComponent();
-
+            LoadUserData();  
         }
 
-
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
-
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
-
-
-
-
-
-
+        // SQLite connection string
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
 
         private void btn_Logout_Click(object sender, EventArgs e)
         {
             LoginForm login = new LoginForm();
             login.Show();
-            this.Hide();
+            this.Close();
+
         }
 
         #region Exit/Minimized
@@ -50,19 +33,14 @@ namespace Inventory
         private void MinimizedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
 
         private void ExitApp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
 
         #endregion
-
-
-
 
         #region Functions
 
@@ -86,10 +64,10 @@ namespace Inventory
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(*) FROM CategoryTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -101,10 +79,7 @@ namespace Inventory
             }
         }
 
-
-        #endregion  
-
-
+        #endregion
 
         #region SideBarMenu
 
@@ -136,10 +111,17 @@ namespace Inventory
             this.Hide();
         }
 
-
         #endregion
 
+   
+        private void LoadUserData()
+        {
+            userLabel.Text = "Logged in as: " + LoggedInUser.Username;
+        }
 
-       
+
+
+      
+
     }
 }

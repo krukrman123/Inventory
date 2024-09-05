@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.Sql;
-using Microsoft.Data.SqlClient;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
+using System.Data.SQLite; // Použití SQLite
 using System.Configuration;
-using Microsoft.VisualBasic.ApplicationServices;
-
-
 
 namespace Inventory
 {
@@ -24,31 +14,25 @@ namespace Inventory
             InitializeComponent();
         }
 
-
         private void ManageUser_Load(object sender, EventArgs e)
         {
             selectProducts();
         }
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
 
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
-
-
-
-
-        #region Fuinctions
+        #region Functions
 
         void selectProducts()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string query = "SELECT * FROM UserTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(query, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(query, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     UsersGV.DataSource = ds.Tables[0];
@@ -60,15 +44,14 @@ namespace Inventory
             }
         }
 
-
         private bool CheckIfCategoriesExist()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -80,41 +63,34 @@ namespace Inventory
             }
         }
 
-
-
-
-
-
         #endregion
 
+        #region DataGridView Info
 
-        #region DataGripViewInfo
         private void UsersGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            userNameTB.Text = UsersGV.SelectedRows[0].Cells[0].Value.ToString();
-            fullNameTB.Text = UsersGV.SelectedRows[0].Cells[1].Value.ToString();
-            passwordTB.Text = UsersGV.SelectedRows[0].Cells[2].Value.ToString();
-            TelephoneTB.Text = UsersGV.SelectedRows[0].Cells[3].Value.ToString();
-
+            if (UsersGV.SelectedRows.Count > 0)
+            {
+                userNameTB.Text = UsersGV.SelectedRows[0].Cells[0].Value.ToString();
+                fullNameTB.Text = UsersGV.SelectedRows[0].Cells[1].Value.ToString();
+                passwordTB.Text = UsersGV.SelectedRows[0].Cells[2].Value.ToString();
+                TelephoneTB.Text = UsersGV.SelectedRows[0].Cells[3].Value.ToString();
+            }
         }
 
         #endregion
 
-
-        #region Exit/Minized
+        #region Exit/Minimize
 
         private void ExitAapp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
 
         private void MinimizedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
-
 
         private void btn_home_Click(object sender, EventArgs e)
         {
@@ -123,62 +99,9 @@ namespace Inventory
             this.Close();
         }
 
-
         #endregion
 
-
-        #region DatabaseEdit
-
-        private void btn_add_Click(object sender, EventArgs e)
-        {
-            string userName = userNameTB.Text;
-            string fullName = fullNameTB.Text;
-            string password = passwordTB.Text;
-            string telephone = TelephoneTB.Text;
-
-            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(telephone))
-            {
-                MessageBox.Show("Please fill in all information correctly.", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                using (SqlConnection Con = new SqlConnection(connectionString))
-                {
-                    Con.Open();
-
-                    // Check if the phone number already exists in the database
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM UserTbl WHERE Uphone = @Telephone", Con);
-                    checkCmd.Parameters.AddWithValue("@Telephone", telephone);
-                    int count = (int)checkCmd.ExecuteScalar();
-
-                    if (count == 1)
-                    {
-                        MessageBox.Show("The phone number already exists.", "Registration failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    // Add a new user
-                    string addUserQuery = "INSERT INTO UserTbl (Uname, Ufullname, Upassword, Uphone) VALUES (@UserName, @FullName, @Password, @Telephone)";
-                    SqlCommand cmd = new SqlCommand(addUserQuery, Con);
-                    cmd.Parameters.AddWithValue("@UserName", userName);
-                    cmd.Parameters.AddWithValue("@FullName", fullName);
-                    cmd.Parameters.AddWithValue("@Password", password);
-                    cmd.Parameters.AddWithValue("@Telephone", telephone);
-                    cmd.ExecuteNonQuery();
-                }
-
-                ResetText();
-                selectProducts();
-
-                MessageBox.Show("User added successfully.", "Successful registration", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
-            }
-        }
+        #region Database Edit
 
 
         private void btn_delete_Click(object sender, EventArgs e)
@@ -193,14 +116,14 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     // Check if the user with the given phone number exists
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM UserTbl WHERE Uphone = @Telephone", Con);
+                    SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM UserTbl WHERE Uphone = @Telephone", Con);
                     checkCmd.Parameters.AddWithValue("@Telephone", telephone);
-                    int count = (int)checkCmd.ExecuteScalar();
+                    long count = (long)checkCmd.ExecuteScalar();
 
                     if (count == 0)
                     {
@@ -210,7 +133,7 @@ namespace Inventory
 
                     // Delete the user
                     string deleteQuery = "DELETE FROM UserTbl WHERE Uphone = @Telephone";
-                    SqlCommand cmd = new SqlCommand(deleteQuery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(deleteQuery, Con);
                     cmd.Parameters.AddWithValue("@Telephone", telephone);
                     cmd.ExecuteNonQuery();
                 }
@@ -226,8 +149,6 @@ namespace Inventory
             }
         }
 
-
-
         private void btn_edit_Click(object sender, EventArgs e)
         {
             string username = userNameTB.Text;
@@ -240,14 +161,14 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     // Verify that a user with the given username exists
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM UserTbl WHERE Uname = @Uname", Con);
+                    SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM UserTbl WHERE Uname = @Uname", Con);
                     checkCmd.Parameters.AddWithValue("@Uname", username);
-                    int userCount = (int)checkCmd.ExecuteScalar();
+                    long userCount = (long)checkCmd.ExecuteScalar();
 
                     if (userCount == 0)
                     {
@@ -257,7 +178,7 @@ namespace Inventory
 
                     // Update the user
                     string updateQuery = "UPDATE UserTbl SET Ufullname = @Ufullname, Upassword = @Upassword, Uphone = @Uphone WHERE Uname = @Uname";
-                    SqlCommand cmd = new SqlCommand(updateQuery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(updateQuery, Con);
                     cmd.Parameters.AddWithValue("@Uname", username);
                     cmd.Parameters.AddWithValue("@Ufullname", fullNameTB.Text);
                     cmd.Parameters.AddWithValue("@Upassword", passwordTB.Text);
@@ -282,9 +203,7 @@ namespace Inventory
             }
         }
 
-
         #endregion
-
 
         #region SideBarMenu
 
@@ -293,7 +212,6 @@ namespace Inventory
             ManageCategories categories = new ManageCategories();
             categories.Show();
             this.Close();
-
         }
 
         private void CustomerMenu_BT_Click(object sender, EventArgs e)
@@ -301,7 +219,6 @@ namespace Inventory
             ManageCustomers customers = new ManageCustomers();
             customers.Show();
             this.Close();
-
         }
 
         private void OrderMenu_BT_Click(object sender, EventArgs e)
@@ -309,7 +226,6 @@ namespace Inventory
             ManageOrders orders = new ManageOrders();
             orders.Show();
             this.Close();
-
         }
 
         private void ProductsMenu_BT_Click(object sender, EventArgs e)
@@ -321,8 +237,6 @@ namespace Inventory
                 ManageProducts prod = new ManageProducts();
                 prod.Show();
                 this.Close();
-
-
             }
             else
             {
@@ -335,14 +249,8 @@ namespace Inventory
             ManageUser users = new ManageUser();
             users.Show();
             this.Close();
-
-
         }
 
-
         #endregion
-
-
     }
 }
-

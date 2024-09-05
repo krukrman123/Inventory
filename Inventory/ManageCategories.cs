@@ -1,38 +1,28 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SQLite; // Použití SQLite
 using System.Windows.Forms;
-using System.Configuration;
-
 
 namespace Inventory
 {
     public partial class ManageCategories : Form
     {
+     
         public ManageCategories()
         {
             InitializeComponent();
+            selectProducts();
         }
+
         private void ManageCategories_Load(object sender, EventArgs e)
         {
             selectProducts();
             categoryId_TB.Text = GenerateCustomerId();
         }
 
-
-
         /////////////////////////////// SQL Connect //////////////////////////////////////////
 
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
-
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         private void btn_home_Click(object sender, EventArgs e)
         {
@@ -41,24 +31,25 @@ namespace Inventory
             this.Hide();
         }
 
-
         #region Functions
 
         void selectProducts()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string Myquery = "SELECT * FROM CategoryTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
+
+                    // Ensure DataSource is set to null before assigning a new one
+                    CategoryGV.DataSource = null;
                     CategoryGV.DataSource = ds.Tables[0];
                 }
-
             }
             catch (Exception ex)
             {
@@ -68,14 +59,15 @@ namespace Inventory
 
 
 
+
         private bool CheckIfCategoriesExist()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -89,17 +81,26 @@ namespace Inventory
 
 
 
+     
+
+
+
+
+
+
+
+
 
 
         private string GenerateCustomerId()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    long count = (long)cmd.ExecuteScalar();
                     count++;
                     return count.ToString();
                 }
@@ -113,22 +114,17 @@ namespace Inventory
 
         #endregion
 
-        #region DataGripViewMenu
+        #region DataGridViewMenu
 
         private void CategoryGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             categoryId_TB.Text = CategoryGV.SelectedRows[0].Cells[0].Value.ToString();
             categoryName_TB.Text = CategoryGV.SelectedRows[0].Cells[1].Value.ToString();
-
-
         }
-
 
         #endregion
 
         #region ManageCategoriesSystem
-
-
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
@@ -148,11 +144,11 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string myquery = "DELETE FROM CategoryTbl WHERE CatId = @CategoryId";
-                    SqlCommand cmd = new SqlCommand(myquery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(myquery, Con);
                     cmd.Parameters.AddWithValue("@CategoryId", categoryId);
                     cmd.ExecuteNonQuery();
                 }
@@ -168,20 +164,16 @@ namespace Inventory
 
         private bool CategoryExists(string categoryId)
         {
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 Con.Open();
                 string query = "SELECT COUNT(*) FROM CategoryTbl WHERE CatId = @CategoryId";
-                SqlCommand cmd = new SqlCommand(query, Con);
+                SQLiteCommand cmd = new SQLiteCommand(query, Con);
                 cmd.Parameters.AddWithValue("@CategoryId", categoryId);
-                int count = (int)cmd.ExecuteScalar();
+                long count = (long)cmd.ExecuteScalar();
                 return count > 0;
             }
         }
-
-
-
-
 
         private void btn_edit_Click(object sender, EventArgs e)
         {
@@ -208,11 +200,11 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string myquery = "UPDATE CategoryTbl SET CatName = @CategoryName WHERE CatId = @CategoryId";
-                    SqlCommand cmd = new SqlCommand(myquery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(myquery, Con);
                     cmd.Parameters.AddWithValue("@CategoryId", categoryId);
                     cmd.Parameters.AddWithValue("@CategoryName", categoryName);
                     cmd.ExecuteNonQuery();
@@ -227,7 +219,6 @@ namespace Inventory
             }
         }
 
-
         private void btn_add_Click(object sender, EventArgs e)
         {
             string categoryId = categoryId_TB.Text;
@@ -241,23 +232,23 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     // Check if a category with the given ID already exists
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM CategoryTbl WHERE CatId = @CategoryId", Con);
+                    SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM CategoryTbl WHERE CatId = @CategoryId", Con);
                     checkCmd.Parameters.AddWithValue("@CategoryId", categoryId);
-                    int count = (int)checkCmd.ExecuteScalar();
+                    long count = (long)checkCmd.ExecuteScalar();
 
-                    if (count == 1)
+                    if (count > 0) // Count > 0 means the category ID already exists
                     {
                         MessageBox.Show("Category ID already exists.", "Registration Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
                     // Add a new category
-                    SqlCommand cmd = new SqlCommand("INSERT INTO CategoryTbl (CatId, CatName) VALUES (@CategoryId, @CategoryName)", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("INSERT INTO CategoryTbl (CatId, CatName) VALUES (@CategoryId, @CategoryName)", Con);
                     cmd.Parameters.AddWithValue("@CategoryId", categoryId);
                     cmd.Parameters.AddWithValue("@CategoryName", categoryName);
                     cmd.ExecuteNonQuery();
@@ -265,6 +256,8 @@ namespace Inventory
 
                 MessageBox.Show("Category Successfully Added");
                 selectProducts();
+                categoryId_TB.Text = GenerateCustomerId();
+
             }
             catch (Exception ex)
             {
@@ -280,16 +273,12 @@ namespace Inventory
         private void MinimizedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
-
 
         private void ExitApp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
-
         #endregion
 
         #region TextArea
@@ -299,12 +288,10 @@ namespace Inventory
             {
                 e.Handled = true;
             }
-
         }
         #endregion
 
         #region SideBarMenu
-
 
         private void CategoriesMenu_BT_Click(object sender, EventArgs e)
         {
@@ -318,7 +305,6 @@ namespace Inventory
             ManageCustomers customers = new ManageCustomers();
             customers.Show();
             this.Close();
-
         }
 
         private void OrderMenu_BT_Click(object sender, EventArgs e)
@@ -326,7 +312,6 @@ namespace Inventory
             ManageOrders orders = new ManageOrders();
             orders.Show();
             this.Close();
-
         }
 
         private void ProductsMenu_BT_Click(object sender, EventArgs e)
@@ -338,7 +323,6 @@ namespace Inventory
                 ManageProducts prod = new ManageProducts();
                 prod.Show();
                 this.Close();
-
             }
             else
             {
@@ -351,13 +335,13 @@ namespace Inventory
             ManageUser users = new ManageUser();
             users.Show();
             this.Close();
-
         }
 
         #endregion
 
 
-       
+
+      
+
     }
 }
-

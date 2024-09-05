@@ -1,9 +1,8 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Configuration;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Data.SQLite; // Použití SQLite
 
 namespace Inventory
 {
@@ -14,23 +13,20 @@ namespace Inventory
             InitializeComponent();
         }
 
-
         #region ConnectToSQL
-
-
-        // Add connection string
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         // Function to retrieve data from OrderTbl table
         void selectProducts()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
+                    Con.Open();
                     string Myquery = "SELECT * FROM OrderTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     OrderGV.DataSource = ds.Tables[0];
@@ -45,17 +41,16 @@ namespace Inventory
 
         #endregion
 
-
         #region ViewOrder
 
         private void btn_view_Click(object sender, EventArgs e)
         {
             selectProducts();
         }
+
         #endregion
 
-
-        #region DataGripViewMenu
+        #region DataGridViewMenu
 
         private void OrderGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -70,6 +65,12 @@ namespace Inventory
             Font titleFont = new Font("Century", 25, FontStyle.Bold);
             Font contentFont = new Font("Century", 20, FontStyle.Regular);
             Brush brush = Brushes.Black;
+
+            if (OrderGV.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("No order selected.");
+                return;
+            }
 
             DataGridViewRow selectedRow = OrderGV.SelectedRows[0];
 
@@ -120,9 +121,7 @@ namespace Inventory
 
         #endregion
 
-
         #region ExitButton
-
 
         private void label_Minimize_Click_1(object sender, EventArgs e)
         {
@@ -133,8 +132,6 @@ namespace Inventory
         {
             this.Close();
         }
-
-
 
         #endregion
     }

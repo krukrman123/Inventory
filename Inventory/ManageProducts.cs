@@ -1,22 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
-using System.Configuration;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
+using System.Data.SQLite; 
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Globalization;
-using System.Windows.Controls.Primitives;
-using Newtonsoft.Json.Linq;
-using Color = System.Drawing.Color;
-
 
 namespace Inventory
 {
@@ -26,63 +16,48 @@ namespace Inventory
         {
             InitializeComponent();
 
-
             ProductGV.RowTemplate.Height = 150;
             ((DataGridViewImageColumn)ProductGV.Columns[ProductGV.Columns.Count - 1]).ImageLayout = DataGridViewImageCellLayout.Stretch;
-
         }
-
 
         private void ManageProducts_Load(object sender, EventArgs e)
         {
-
             fillCategory();
             selectProducts();
         }
 
-
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
 
         ManageProductsView myformEdit = new ManageProductsView();
         ManageProductsAdd myformAdd = new ManageProductsAdd();
 
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
-
-
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         #region Exit/Minimized
-
-
 
         private void MinimazedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
-
 
         private void ExitApp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
-
 
         #endregion
 
-        #region Functions 
-
+        #region Functions
 
         void fillCategory()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     string query = "SELECT * FROM CategoryTbl";
-                    SqlCommand cmd = new SqlCommand(query, Con);
-                    SqlDataReader rdr;
+                    SQLiteCommand cmd = new SQLiteCommand(query, Con);
+                    SQLiteDataReader rdr;
                     Con.Open();
                     DataTable dt = new DataTable();
                     dt.Columns.Add("CatName", typeof(string));
@@ -98,18 +73,16 @@ namespace Inventory
             }
         }
 
-
-
         void selectProducts()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    string Myquery = "select * from ProductTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    string Myquery = "SELECT * FROM ProductTbl";
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     ProductGV.DataSource = ds.Tables[0];
@@ -120,21 +93,18 @@ namespace Inventory
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-
-
-
 
         void filterByCategory()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    string Myquery = "SELECT * FROM ProductTbl WHERE ProdCat='" + searchCombo_Products.SelectedValue.ToString() + "'";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    string Myquery = "SELECT * FROM ProductTbl WHERE ProdCat=@Category";
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    da.SelectCommand.Parameters.AddWithValue("@Category", searchCombo_Products.SelectedValue.ToString());
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     ProductGV.DataSource = ds.Tables[0];
@@ -146,18 +116,20 @@ namespace Inventory
             }
         }
 
-
-
         private bool CheckIfCategoriesExist()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    return count > 0;
+                    string query = "SELECT COUNT(*) FROM CategoryTbl";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, Con))
+                    {
+                        // Use ExecuteScalar() to get the count
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        return count > 0;
+                    }
                 }
             }
             catch (Exception ex)
@@ -167,48 +139,52 @@ namespace Inventory
             }
         }
 
+
+
         #endregion
 
-        #region DataGripViewMenu
-
+        #region DataGridViewMenu
 
         private void ProductGV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-
-            myformEdit.productIDTB.Text = ProductGV.SelectedRows[0].Cells[0].Value.ToString();
-            myformEdit.productNameTB.Text = ProductGV.SelectedRows[0].Cells[1].Value.ToString();
-            myformEdit.productQTYTB.Text = ProductGV.SelectedRows[0].Cells[2].Value.ToString();
-            myformEdit.productPriceTB.Text = ProductGV.SelectedRows[0].Cells[3].Value.ToString();
-            myformEdit.descriptionTB.Text = ProductGV.SelectedRows[0].Cells[4].Value.ToString();
-            myformEdit.CatCombo.SelectedValue = ProductGV.SelectedRows[0].Cells[5].Value.ToString();
-            myformEdit.FileNameTB.Text = ProductGV.SelectedRows[0].Cells[6].Value.ToString();
-            myformEdit.textProductTb.Text = ProductGV.SelectedRows[0].Cells[7].Value.ToString();
-            byte[] image = Encoding.ASCII.GetBytes(ProductGV.SelectedRows[0].Cells[8].Value.ToString());
-
-
-
-            if (image == null)
-                myformEdit.PictureBox.Image = null;
-            if (!DBNull.Value.Equals(ProductGV.SelectedRows[0].Cells[8].Value)) ;
-            else
-                return;
-
+            if (ProductGV.SelectedRows.Count > 0)
             {
+                myformEdit.productIDTB.Text = ProductGV.SelectedRows[0].Cells[0].Value.ToString();
+                myformEdit.productNameTB.Text = ProductGV.SelectedRows[0].Cells[1].Value.ToString();
+                myformEdit.productQTYTB.Text = ProductGV.SelectedRows[0].Cells[2].Value.ToString();
+                myformEdit.productPriceTB.Text = ProductGV.SelectedRows[0].Cells[3].Value.ToString();
+                myformEdit.descriptionTB.Text = ProductGV.SelectedRows[0].Cells[4].Value.ToString();
+                myformEdit.CatCombo.SelectedValue = ProductGV.SelectedRows[0].Cells[5].Value.ToString();
+                myformEdit.FileNameTB.Text = ProductGV.SelectedRows[0].Cells[6].Value.ToString();
+                myformEdit.textProductTb.Text = ProductGV.SelectedRows[0].Cells[7].Value.ToString();
 
-                var data = (byte[])(ProductGV.SelectedRows[0].Cells[8].Value);
-                var stream = new MemoryStream(data);
-                myformEdit.PictureBox.Image = Image.FromStream(stream);
+                byte[] image = Encoding.ASCII.GetBytes(ProductGV.SelectedRows[0].Cells[8].Value.ToString());
 
+
+
+                if (image == null)
+                    myformEdit.PictureBox.Image = null;
+                if (!DBNull.Value.Equals(ProductGV.SelectedRows[0].Cells[8].Value)) ;
+                else
+                    return;
+
+                {
+
+                    var data = (byte[])(ProductGV.SelectedRows[0].Cells[8].Value);
+                    var stream = new MemoryStream(data);
+                    myformEdit.PictureBox.Image = Image.FromStream(stream);
+
+                }
+
+                myformEdit.ShowDialog();
+                selectProducts();
             }
-
-            myformEdit.ShowDialog();
-            selectProducts();
-
         }
 
         #endregion
 
         #region ButtonUserList
+
         private void btn_home_Click(object sender, EventArgs e)
         {
             HomeFrom home = new HomeFrom();
@@ -216,23 +192,21 @@ namespace Inventory
             this.Hide();
         }
 
-
-
         private void btn_add_Click(object sender, EventArgs e)
         {
-
             myformAdd.ShowDialog();
             selectProducts();
         }
+
         private void btn_sreach_Click(object sender, EventArgs e)
         {
             filterByCategory();
         }
+
         private void btn_Refresh_Click(object sender, EventArgs e)
         {
             selectProducts();
         }
-
 
         #endregion
 
@@ -245,8 +219,6 @@ namespace Inventory
             ManageCategories categories = new ManageCategories();
             categories.Show();
             this.Close();
-
-
         }
 
         private void CustomerMenu_BT_Click(object sender, EventArgs e)
@@ -254,7 +226,6 @@ namespace Inventory
             ManageCustomers customers = new ManageCustomers();
             customers.Show();
             this.Close();
-
         }
 
         private void OrderMenu_BT_Click(object sender, EventArgs e)
@@ -262,12 +233,10 @@ namespace Inventory
             ManageOrders orders = new ManageOrders();
             orders.Show();
             this.Close();
-
         }
 
         private void ProductsMenu_BT_Click(object sender, EventArgs e)
         {
-
             bool categoriesExist = CheckIfCategoriesExist();
 
             if (categoriesExist)
@@ -275,13 +244,11 @@ namespace Inventory
                 ManageProducts prod = new ManageProducts();
                 prod.Show();
                 this.Close();
-
             }
             else
             {
                 MessageBox.Show("There are no categories. Add categories first.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
 
         private void UserMenu_BT_Click(object sender, EventArgs e)
@@ -291,11 +258,6 @@ namespace Inventory
             this.Close();
         }
 
-
         #endregion
-
-
-       
     }
-
 }

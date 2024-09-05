@@ -1,21 +1,10 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
+using System.Data.SQLite; // Použití SQLite
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Globalization;
-using System.Configuration;
-using System.Windows.Controls.Primitives;
-
-
 
 namespace Inventory
 {
@@ -29,37 +18,27 @@ namespace Inventory
         private void ManageProductsView_Load(object sender, EventArgs e)
         {
             fillCategory();
-
         }
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
-
-            {
-                productIDTB.Clear();
-                productNameTB.Clear();
-                productQTYTB.Clear();
-                productPriceTB.Clear();
-                descriptionTB.Clear();
-            }
+            productIDTB.Clear();
+            productNameTB.Clear();
+            productQTYTB.Clear();
+            productPriceTB.Clear();
+            descriptionTB.Clear();
         }
 
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
-
-
-
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
-
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         #region Functions
         void fillCategory()
         {
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 string query = "SELECT * FROM CategoryTbl";
-                SqlCommand cmd = new SqlCommand(query, Con);
-                SqlDataReader rdr = null;
+                SQLiteCommand cmd = new SQLiteCommand(query, Con);
+                SQLiteDataReader rdr = null;
 
                 try
                 {
@@ -78,25 +57,22 @@ namespace Inventory
                 }
                 finally
                 {
-                    // Close SqlDataReader
+                    // Close SQLiteDataReader
                     if (rdr != null)
                     {
                         rdr.Close();
                     }
                 }
             }
-
-
-
         }
-
-
 
         private byte[] SavePhoto()
         {
-            MemoryStream ms = new MemoryStream();
-            PictureBox.Image.Save(ms, PictureBox.Image.RawFormat);
-            return ms.GetBuffer();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                PictureBox.Image.Save(ms, PictureBox.Image.RawFormat);
+                return ms.ToArray();
+            }
         }
 
         private byte[] ConvertImageToBytes(Image image)
@@ -109,22 +85,21 @@ namespace Inventory
 
             using (MemoryStream stream = new MemoryStream())
             {
-                image.Save(stream, ImageFormat.Jpeg); 
+                image.Save(stream, ImageFormat.Jpeg);
                 return stream.ToArray();
             }
         }
-
 
         private void UpdateImage(int prodId, byte[] imageBytes)
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     string updateQuery = "UPDATE ProductTbl SET ProdImage = @ProdImage WHERE ProdId = @ProdId";
-                    SqlCommand updateCmd = new SqlCommand(updateQuery, Con);
+                    SQLiteCommand updateCmd = new SQLiteCommand(updateQuery, Con);
                     updateCmd.Parameters.AddWithValue("@ProdImage", imageBytes);
                     updateCmd.Parameters.AddWithValue("@ProdId", prodId);
                     updateCmd.ExecuteNonQuery();
@@ -141,26 +116,26 @@ namespace Inventory
             }
         }
 
-
         private void LoadImage(int prodId)
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     string selectQuery = "SELECT ProdImage FROM ProductTbl WHERE ProdId = @ProdId";
-                    SqlCommand selectCmd = new SqlCommand(selectQuery, Con);
+                    SQLiteCommand selectCmd = new SQLiteCommand(selectQuery, Con);
                     selectCmd.Parameters.AddWithValue("@ProdId", prodId);
 
-                    SqlDataReader reader = selectCmd.ExecuteReader();
-
-                    if (reader.Read())
+                    using (SQLiteDataReader reader = selectCmd.ExecuteReader())
                     {
-                        // Retrieve a byte[] from the database and convert it back to an image
-                        byte[] imageBytes = (byte[])reader["ProdImage"];
-                        PictureBox.Image = Image.FromStream(new MemoryStream(imageBytes));
+                        if (reader.Read())
+                        {
+                            // Retrieve a byte[] from the database and convert it back to an image
+                            byte[] imageBytes = (byte[])reader["ProdImage"];
+                            PictureBox.Image = Image.FromStream(new MemoryStream(imageBytes));
+                        }
                     }
                 }
             }
@@ -172,25 +147,23 @@ namespace Inventory
 
         #endregion
 
-
         #region ManageProductSystem
-
 
         public void insert(string filename, byte[] image)
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string myQuery = "INSERT INTO ProductTbl(ProdFile, ProdImage) VALUES (@ProdFile, @ProdImage)";
-                    SqlCommand cmd = new SqlCommand(myQuery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(myQuery, Con);
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@ProdFile", filename);
                     cmd.Parameters.AddWithValue("@ProdImage", image);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Product Successfully Added");
-                } 
+                }
             }
             catch (Exception ex)
             {
@@ -200,22 +173,30 @@ namespace Inventory
 
         private void btn_delete_Click(object sender, EventArgs e)
         {
-            if (productIDTB.Text == "")
+            if (string.IsNullOrWhiteSpace(productIDTB.Text))
             {
                 MessageBox.Show("Enter The Product ID Number");
+                return;
             }
-            else
+
+            try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    string myquery = "DELETE FROM ProductTbl WHERE ProdId='" + productIDTB.Text + "';";
-                    SqlCommand cmd = new SqlCommand(myquery, Con);
+                    string myquery = "DELETE FROM ProductTbl WHERE ProdId = @ProdId";
+                    SQLiteCommand cmd = new SQLiteCommand(myquery, Con);
+                    cmd.Parameters.AddWithValue("@ProdId", productIDTB.Text);
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Product Successfully deleted");
+                    MessageBox.Show("Product Successfully Deleted");
                 }
-
-
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
                 this.Close();
             }
         }
@@ -230,13 +211,12 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
-
                     string updateQuery = "UPDATE ProductTbl SET ProdName = @ProdName, ProdQty = @ProdQty, ProdPrice = @ProdPrice, ProdDesc = @ProdDesc, ProdCat = @ProdCat, ProdFile = @ProdFile, ProdText = @ProdText, ProdImage = @ProdImage WHERE ProdId = @ProdId";
-                    SqlCommand cmd = new SqlCommand(updateQuery, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(updateQuery, Con);
 
                     cmd.Parameters.AddWithValue("@ProdId", productIDTB.Text);
                     cmd.Parameters.AddWithValue("@ProdName", productNameTB.Text);
@@ -246,7 +226,6 @@ namespace Inventory
                     cmd.Parameters.AddWithValue("@ProdCat", CatCombo.SelectedValue.ToString());
                     cmd.Parameters.AddWithValue("@ProdFile", FileNameTB.Text);
                     cmd.Parameters.AddWithValue("@ProdText", textProductTb.Text);
-
 
                     // Add a product image if a new image has been selected
                     if (PictureBox.Image != null)
@@ -278,30 +257,23 @@ namespace Inventory
             }
         }
 
-
-
-
         private void PictureBox_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "ProdFile(*.jpg;*.jpeg)| *.jpg;*.jpeg", Multiselect = false })
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Image Files(*.jpg;*.jpeg)| *.jpg;*.jpeg", Multiselect = false })
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     PictureBox.Image = Image.FromFile(ofd.FileName);
                     FileNameTB.Text = ofd.FileName;
-                    int prodId = Convert.ToInt32(productIDTB.Text); 
-                    UpdateImage(prodId, ConvertImageToBytes(PictureBox.Image));
+                    int prodId;
+                    if (int.TryParse(productIDTB.Text, out prodId))
+                    {
+                        UpdateImage(prodId, ConvertImageToBytes(PictureBox.Image));
+                    }
                 }
             }
         }
 
-
         #endregion
-
-
-       
-
-
     }
-
 }

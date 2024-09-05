@@ -14,10 +14,13 @@ namespace Inventory
     public partial class Loading_Form : Form
     {
 
+
         public Loading_Form()
         {
             InitializeComponent();
         }
+
+
 
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -26,15 +29,14 @@ namespace Inventory
             ProgressBar1.Text = ProgressBar1.Value.ToString() + "%";
             if (ProgressBar1.Value == 100)
             {
-
-
+                // Close the Loading_Form
                 this.Close();
                 timer1.Stop();
-                HomeFrom login = new HomeFrom();
-                login.Show();
 
+                // Open the HomeForm with role-based adjustments
+                HomeFrom home = new HomeFrom();
+                home.Show();
             }
-
         }
 
         private void MinimizedApp_Label_Click(object sender, EventArgs e)

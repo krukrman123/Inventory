@@ -1,26 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Windows.Controls;
+using System.Data.SQLite; // Použití SQLite
 using System.Windows.Forms;
-using System.Configuration;
-
-
-
-
-
 
 namespace Inventory
 {
     public partial class ManageOrders : Form
     {
-
-
         #region attributes
 
         int sum = 0;
@@ -32,9 +18,7 @@ namespace Inventory
         bool found = false;
         private BindingSource bindingSource = new BindingSource();
 
-
         #endregion
-
 
         public ManageOrders()
         {
@@ -43,50 +27,39 @@ namespace Inventory
 
         private void ManageOrders_Load(object sender, EventArgs e)
         {
-
             selectProducts();
             populateProducts();
             fillCategory();
             GenerateId();
             tableColums();
 
-
-
             OrderGV.DataSource = table;
-
         }
 
         DataTable table = new DataTable();
-
 
         #region Exit/Minimized
 
         private void MinimizedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
+
         private void ExitApp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
 
         #endregion
 
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
+        /////////////////////////////// SQLite Connect //////////////////////////////////////////
 
-
-
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
-
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         private void btn_view_Click(object sender, EventArgs e)
         {
             ViewOrders view = new ViewOrders();
             view.Show();
-
         }
 
         private void btn_home_Click(object sender, EventArgs e)
@@ -94,22 +67,18 @@ namespace Inventory
             HomeFrom home = new HomeFrom();
             home.Show();
             this.Hide();
-
         }
 
-
-
         #region Functions
-
 
         void GenerateId()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(OrderId) FROM OrderTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(OrderId) FROM OrderTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     count++;
                     OrderIdTB.Text = count.ToString();
@@ -125,12 +94,12 @@ namespace Inventory
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string Myquery = "SELECT * FROM CustomerTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     CustomerGV.DataSource = ds.Tables[0];
@@ -142,16 +111,15 @@ namespace Inventory
             }
         }
 
-
         void fillCategory()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     string query = "SELECT * FROM CategoryTbl";
-                    SqlCommand cmd = new SqlCommand(query, Con);
-                    SqlDataReader rdr;
+                    SQLiteCommand cmd = new SQLiteCommand(query, Con);
+                    SQLiteDataReader rdr;
                     Con.Open();
                     DataTable dt = new DataTable();
                     dt.Columns.Add("CatName", typeof(string));
@@ -167,17 +135,16 @@ namespace Inventory
             }
         }
 
-
         void populateProducts()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string Myquery = "SELECT * FROM ProductTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     ProductGV.DataSource = ds.Tables[0];
@@ -188,7 +155,6 @@ namespace Inventory
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         void updateProduct()
         {
@@ -203,11 +169,11 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string query = "UPDATE ProductTbl SET ProdQty = @NewQty WHERE ProdId = @Id";
-                    SqlCommand cmd = new SqlCommand(query, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(query, Con);
                     cmd.Parameters.AddWithValue("@NewQty", newQty);
                     cmd.Parameters.AddWithValue("@Id", id);
                     cmd.ExecuteNonQuery();
@@ -223,24 +189,21 @@ namespace Inventory
 
         void tableColums()
         {
-
             table.Columns.Add("Num", typeof(int));
             table.Columns.Add("Product", typeof(string));
             table.Columns.Add("Quantity", typeof(int));
             table.Columns.Add("Uprice", typeof(int));
             table.Columns.Add("TotPrice", typeof(int));
-
         }
-
 
         private bool CheckIfCategoriesExist()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -251,7 +214,6 @@ namespace Inventory
                 return false;
             }
         }
-
 
         private void UpdateDataGridView()
         {
@@ -265,12 +227,6 @@ namespace Inventory
             OrderGV.Refresh();
         }
 
-
-
-
-
-
-
         #endregion
 
         #region DataGripViewMenu
@@ -280,7 +236,6 @@ namespace Inventory
             CustomerIdTB.Text = CustomerGV.SelectedRows[0].Cells[0].Value.ToString();
             CustNameTB.Text = CustomerGV.SelectedRows[0].Cells[1].Value.ToString();
         }
-
 
         private void ProductGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -294,7 +249,7 @@ namespace Inventory
                 }
                 else
                 {
-                    product = string.Empty; 
+                    product = string.Empty;
                 }
 
                 if (selectedRow.Cells[2].Value != DBNull.Value && selectedRow.Cells[2].Value != null)
@@ -303,7 +258,7 @@ namespace Inventory
                 }
                 else
                 {
-                    stock = 0; 
+                    stock = 0;
                 }
 
                 if (selectedRow.Cells[3].Value != DBNull.Value && selectedRow.Cells[3].Value != null)
@@ -312,7 +267,7 @@ namespace Inventory
                 }
                 else
                 {
-                    uprice = 0; 
+                    uprice = 0;
                 }
 
                 flag = 1;
@@ -365,20 +320,41 @@ namespace Inventory
 
             if (!productFound)
             {
-                num = num + 1;
+                num = table.Rows.Count + 1;
                 table.Rows.Add(num, product, quantity, uprice, totalPrice);
             }
 
-            // Update the total price of the order
             sum = table.AsEnumerable().Sum(row => Convert.ToInt32(row["TotPrice"]));
             TotAmout.Text = sum.ToString("C");
 
             UpdateDataGridView();
 
             flag = 0;
-
-            updateProduct();
         }
+
+
+      
+
+        private void DeductStock(string product, int quantity)
+        {
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
+            {
+                Con.Open();
+                string query = "UPDATE ProductTbl SET ProdQty = ProdQty - @quantity WHERE ProdName = @product";
+                using (SQLiteCommand cmd = new SQLiteCommand(query, Con))
+                {
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@product", product);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+
+
+
 
 
         private void btn_insert_Click(object sender, EventArgs e)
@@ -396,12 +372,12 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
                     // Check for ID existence
-                    SqlCommand checkIdCmd = new SqlCommand("SELECT COUNT(*) FROM OrderTbl WHERE OrderId = @OrderId", Con);
+                    SQLiteCommand checkIdCmd = new SQLiteCommand("SELECT COUNT(*) FROM OrderTbl WHERE OrderId = @OrderId", Con);
                     checkIdCmd.Parameters.AddWithValue("@OrderId", OrderIdTB.Text);
                     int count = Convert.ToInt32(checkIdCmd.ExecuteScalar());
 
@@ -411,7 +387,6 @@ namespace Inventory
                         return;
                     }
 
-
                     // Debug outputs
                     Console.WriteLine("OrderId: " + OrderIdTB.Text);
                     Console.WriteLine("CustomerId: " + CustomerIdTB.Text);
@@ -419,7 +394,7 @@ namespace Inventory
                     Console.WriteLine("OrderDate: " + orderDate.Value);
                     Console.WriteLine("TotalAmt (numericValue): " + sum);
 
-                    SqlCommand cmd = new SqlCommand("INSERT INTO OrderTbl (OrderId, CustId, CustName, OrderDate, TotalAmt) VALUES (@OrderId, @CustId, @CustName, @OrderDate, @TotalAmt)", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("INSERT INTO OrderTbl (OrderId, CustId, CustName, OrderDate, TotalAmt) VALUES (@OrderId, @CustId, @CustName, @OrderDate, @TotalAmt)", Con);
                     cmd.Parameters.AddWithValue("@OrderId", OrderIdTB.Text);
                     cmd.Parameters.AddWithValue("@CustId", CustomerIdTB.Text);
                     cmd.Parameters.AddWithValue("@CustName", CustNameTB.Text);
@@ -427,44 +402,42 @@ namespace Inventory
                     cmd.Parameters.AddWithValue("@TotalAmt", sum);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("Order Added Successfully");
-                }
+                    OrderGV.Refresh();
 
-                selectProducts();
-                updateProduct();
-                fillCategory();
-                GenerateId();
+                }
+                HomeFrom home = new HomeFrom();
+                home.Show();
+                this.Close();
+
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
-
 
         private void searchCombo_SelectionChangeCommitted(object sender, EventArgs e)
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string Myquery = "SELECT * FROM ProductTbl WHERE ProdCat = @Category";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
                     da.SelectCommand.Parameters.AddWithValue("@Category", searchCombo.SelectedValue.ToString());
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     ProductGV.DataSource = ds.Tables[0];
                 }
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         #endregion
 
@@ -478,7 +451,6 @@ namespace Inventory
             }
         }
 
-
         private void productQTYTB_KeyPress(object sender, KeyPressEventArgs e)
         {
             if ((!char.IsNumber(e.KeyChar)) && (!char.IsControl(e.KeyChar)))
@@ -486,8 +458,6 @@ namespace Inventory
                 e.Handled = true;
             }
         }
-
-
 
         #endregion
 
@@ -538,6 +508,40 @@ namespace Inventory
         }
 
         #endregion
-    }
 
+        private void clear_BTN_Click(object sender, EventArgs e)
+        {
+            // Restore stock for all products in the current order
+            foreach (DataRow row in table.Rows)
+            {
+                string product = row["Product"].ToString();
+                int quantity = Convert.ToInt32(row["Quantity"]);
+
+                RestoreStock(product, quantity);
+            }
+
+            // Clear the DataTable and DataGridView
+            table.Clear();
+            TotAmout.Text = "0";
+            UpdateDataGridView();
+        }
+
+        private void RestoreStock(string product, int quantity)
+        {
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
+            {
+                Con.Open();
+                string query = "UPDATE ProductTbl SET ProdQty = ProdQty + @quantity WHERE ProdName = @product";
+                using (SQLiteCommand cmd = new SQLiteCommand(query, Con))
+                {
+                    cmd.Parameters.AddWithValue("@quantity", quantity);
+                    cmd.Parameters.AddWithValue("@product", product);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+    }
 }

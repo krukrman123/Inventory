@@ -1,10 +1,11 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Security.Cryptography;
+using System.Data.SQLite;
+using Inventory.Class;
 
 namespace Inventory
 {
@@ -18,11 +19,13 @@ namespace Inventory
         public LoginForm()
         {
             InitializeComponent();
+           
         }
 
 
-        #region LoginSystem
 
+
+        #region LoginSystem
 
         private string HashPassword(string password)
         {
@@ -34,28 +37,34 @@ namespace Inventory
         }
 
 
-
         private void LOGIN_Click(object sender, EventArgs e)
         {
-            using (SqlConnection con = new SqlConnection(connectionString))
+            using (SQLiteConnection con = new SQLiteConnection(connectionString))
             {
                 con.Open();
 
+                // Assuming you have a method to hash the password
                 string hashedPassword = HashPassword(PasswordTB.Text);
 
                 string query = $"SELECT COUNT(*) FROM {UsersTableName} WHERE {UsernameColumn}=@username AND {PasswordColumn}=@password";
-                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SQLiteCommand cmd = new SQLiteCommand(query, con))
                 {
                     cmd.Parameters.AddWithValue("@username", Username_TB.Text);
                     cmd.Parameters.AddWithValue("@password", hashedPassword);
 
-                    int userCount = (int)cmd.ExecuteScalar();
+                    int userCount = Convert.ToInt32(cmd.ExecuteScalar());
 
                     if (userCount == 1)
                     {
+                        // Store the username in the LoggedInUser class
+                        LoggedInUser.Username = Username_TB.Text;
+
+                        // Open the loading form and hide the login form
                         Loading_Form loadForm = new Loading_Form();
                         this.Hide();
-                        loadForm.ShowDialog(); 
+                        loadForm.ShowDialog();
+
+                       
                     }
                     else
                     {
@@ -66,27 +75,22 @@ namespace Inventory
         }
 
 
+
+
         #endregion
-
-
 
         #region Buttons
 
         private void Password_CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             PasswordTB.UseSystemPasswordChar = !Password_CheckBox.Checked;
-
         }
-
-
 
         private void btn_clear_Click(object sender, EventArgs e)
         {
             Username_TB.Text = "";
             PasswordTB.Text = "";
         }
-
-
 
         private void CreateNewAccount_BT_Click(object sender, EventArgs e)
         {
@@ -97,9 +101,7 @@ namespace Inventory
 
         #endregion
 
-
-        #region Exit/Minized
-
+        #region Exit/Minimized
 
         private void MinizedApp_Label_Click(object sender, EventArgs e)
         {
@@ -111,11 +113,6 @@ namespace Inventory
             Application.Exit();
         }
 
-
         #endregion
-
-     
-
-     
     }
 }

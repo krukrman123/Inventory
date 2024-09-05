@@ -1,4 +1,8 @@
-﻿namespace Inventory
+﻿using System;
+using System.Windows.Forms;
+using Inventory.Class;
+
+namespace Inventory
 {
     internal static class Program
     {
@@ -8,9 +12,12 @@
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Inicializace databáze
+            DatabaseInitializer.Initialize();
+
+            // Spuštění přihlašovací formy
             ApplicationConfiguration.Initialize();
-                Application.Run(new LoginForm());
-            
+            Application.Run(new LoginForm());
         }
     }
 }

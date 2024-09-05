@@ -1,17 +1,7 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SQLite; // Použití SQLite
 using System.Windows.Forms;
-using System.Data.Sql;
-using static System.ComponentModel.Design.ObjectSelectorEditor;
-using System.Configuration;
-
 
 namespace Inventory
 {
@@ -24,17 +14,12 @@ namespace Inventory
 
         private void ManageCustomers_Load(object sender, EventArgs e)
         {
-            selectProducts();
+            selectCustomers(); // Opraveno na selectCustomers
             customerIdTB.Text = GenerateCustomerId();
         }
 
-
-
-
-        /////////////////////////////// SQL Connect //////////////////////////////////////////
-
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-
+        // SQLite connection string
+        string connectionString = "Data Source=inventory.db;Version=3;";
 
         private void btn_home_Click(object sender, EventArgs e)
         {
@@ -43,33 +28,30 @@ namespace Inventory
             this.Hide();
         }
 
-
         #region Exit/Minimized
 
         private void MinimizedApp_Label_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
-
         }
 
         private void ExitApp_Label_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
         #endregion
 
-        #region Fuctions
-        void selectProducts()
+        #region Functions
+        void selectCustomers() // Opraveno na selectCustomers
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
                     string Myquery = "SELECT * FROM CustomerTbl";
-                    SqlDataAdapter da = new SqlDataAdapter(Myquery, Con);
-                    SqlCommandBuilder builder = new SqlCommandBuilder(da);
+                    SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con);
+                    SQLiteCommandBuilder builder = new SQLiteCommandBuilder(da);
                     var ds = new DataSet();
                     da.Fill(ds);
                     CustomerGV.DataSource = ds.Tables[0];
@@ -81,17 +63,14 @@ namespace Inventory
             }
         }
 
-
-
-
         private bool CheckIfCategoriesExist()
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CatId) FROM CategoryTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     return count > 0;
                 }
@@ -102,58 +81,49 @@ namespace Inventory
                 return false;
             }
         }
-
-
-
-
         #endregion
 
-        #region DataGripViewMenu
+        #region DataGridViewMenu
 
         private void CustomerGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                // Get the data from the selected row DataGridView
                 DataGridViewRow selectedRow = CustomerGV.Rows[e.RowIndex];
-
-                // Get the value from the cell for the customer ID
                 string customerId = selectedRow.Cells[0].Value.ToString();
-
-                // Display customer information
                 customerIdTB.Text = customerId;
                 customerNameTB.Text = selectedRow.Cells[1].Value.ToString();
                 customerPhoneTB.Text = selectedRow.Cells[2].Value.ToString();
 
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
-                    // Query the number of customer orders
+                    // Get the number of orders
                     string orderCountQuery = "SELECT COUNT(*) FROM OrderTbl WHERE CustId = @CustomerId";
-                    using (SqlCommand cmd = new SqlCommand(orderCountQuery, Con))
+                    using (SQLiteCommand cmd = new SQLiteCommand(orderCountQuery, Con))
                     {
                         cmd.Parameters.AddWithValue("@CustomerId", customerId);
-                        int orderCount = (int)cmd.ExecuteScalar();
+                        long orderCount = (long)cmd.ExecuteScalar();
                         OrderLabel.Text = orderCount.ToString();
                     }
 
-                    // Query the total amount of the customer's orders
+                    // Get the total amount
                     string totalAmountQuery = "SELECT SUM(TotalAmt) FROM OrderTbl WHERE CustId = @CustomerId";
-                    using (SqlCommand cmd = new SqlCommand(totalAmountQuery, Con))
+                    using (SQLiteCommand cmd = new SQLiteCommand(totalAmountQuery, Con))
                     {
                         cmd.Parameters.AddWithValue("@CustomerId", customerId);
                         object totalAmount = cmd.ExecuteScalar();
-                        AmoutLabel.Text = totalAmount != DBNull.Value ? totalAmount.ToString() : "0";
+                        AmoutLabel.Text = totalAmount != DBNull.Value ? Convert.ToDecimal(totalAmount).ToString("C") : "0";
                     }
 
-                    // Query the date of the customer's last order
+                    // Get the last order date
                     string lastOrderDateQuery = "SELECT MAX(OrderDate) FROM OrderTbl WHERE CustId = @CustomerId";
-                    using (SqlCommand cmd = new SqlCommand(lastOrderDateQuery, Con))
+                    using (SQLiteCommand cmd = new SQLiteCommand(lastOrderDateQuery, Con))
                     {
                         cmd.Parameters.AddWithValue("@CustomerId", customerId);
                         object lastOrderDate = cmd.ExecuteScalar();
-                        DateLabel.Text = lastOrderDate != DBNull.Value ? ((DateTime)lastOrderDate).ToShortDateString() : "N/A";
+                        DateLabel.Text = lastOrderDate != DBNull.Value ? Convert.ToDateTime(lastOrderDate).ToShortDateString() : "N/A";
                     }
                 }
             }
@@ -161,8 +131,7 @@ namespace Inventory
 
         #endregion
 
-        #region ManageCustomreSystem
-
+        #region ManageCustomerSystem
 
         private void btn_add_Click(object sender, EventArgs e)
         {
@@ -178,14 +147,13 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
-                    // Check if a customer with the given ID already exists
-                    SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM CustomerTbl WHERE CustId = @CustomerId", Con);
+                    SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM CustomerTbl WHERE CustId = @CustomerId", Con);
                     checkCmd.Parameters.AddWithValue("@CustomerId", CustId);
-                    int count = (int)checkCmd.ExecuteScalar();
+                    int count = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                     if (count == 1)
                     {
@@ -193,9 +161,8 @@ namespace Inventory
                         return;
                     }
 
-                    // Adding a new customer
                     string register = "INSERT INTO CustomerTbl (CustId, CustName, CustPhone) VALUES (@CustomerId, @CustomerName, @CustomerPhone)";
-                    SqlCommand cmd = new SqlCommand(register, Con);
+                    SQLiteCommand cmd = new SQLiteCommand(register, Con);
                     cmd.Parameters.AddWithValue("@CustomerId", CustId);
                     cmd.Parameters.AddWithValue("@CustomerName", CustName);
                     cmd.Parameters.AddWithValue("@CustomerPhone", CustPhone);
@@ -203,7 +170,7 @@ namespace Inventory
                 }
 
                 MessageBox.Show("Customer Successfully Added");
-                selectProducts();
+                selectCustomers();
             }
             catch (Exception ex)
             {
@@ -215,10 +182,10 @@ namespace Inventory
         {
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
-                    SqlCommand cmd = new SqlCommand("SELECT COUNT(CustId) FROM CustomerTbl", Con);
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT(CustId) FROM CustomerTbl", Con);
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
                     count++;
                     return count.ToString();
@@ -230,9 +197,6 @@ namespace Inventory
                 return "";
             }
         }
-
-
-
 
         private void btn_edit_Click(object sender, EventArgs e)
         {
@@ -256,12 +220,11 @@ namespace Inventory
             {
                 try
                 {
-                    using (SqlConnection Con = new SqlConnection(connectionString))
+                    using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                     {
                         Con.Open();
 
-                        // Update User
-                        SqlCommand cmd = new SqlCommand("UPDATE CustomerTbl SET CustName = @CustName, CustPhone = @CustPhone  WHERE CustId = @CustId", Con);
+                        SQLiteCommand cmd = new SQLiteCommand("UPDATE CustomerTbl SET CustName = @CustName, CustPhone = @CustPhone WHERE CustId = @CustId", Con);
                         cmd.Parameters.AddWithValue("@CustId", customerId);
                         cmd.Parameters.AddWithValue("@CustName", customerName);
                         cmd.Parameters.AddWithValue("@CustPhone", customerPhone);
@@ -278,7 +241,7 @@ namespace Inventory
                         }
                     }
 
-                    selectProducts();
+                    selectCustomers();
                 }
                 catch (Exception ex)
                 {
@@ -287,7 +250,8 @@ namespace Inventory
             }
         }
 
-        private void btn_delete_Click_1(object sender, EventArgs e)
+
+        private void btn_delete_Click(object sender, EventArgs e)
         {
             string customerId = customerIdTB.Text;
 
@@ -299,26 +263,24 @@ namespace Inventory
             {
                 try
                 {
-                    using (SqlConnection Con = new SqlConnection(connectionString))
+                    using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                     {
                         Con.Open();
 
-                        // Check if the customer with the given ID exists
-                        SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM CustomerTbl WHERE CustId = @CustomerId", Con);
+                        SQLiteCommand checkCmd = new SQLiteCommand("SELECT COUNT(*) FROM CustomerTbl WHERE CustId = @CustomerId", Con);
                         checkCmd.Parameters.AddWithValue("@CustomerId", customerId);
-                        int count = (int)checkCmd.ExecuteScalar();
+                        int count = Convert.ToInt32(checkCmd.ExecuteScalar());
 
                         if (count == 1)
                         {
-                            // If a customer with the given ID exists, a DELETE query is executed
-                            SqlCommand cmd = new SqlCommand("DELETE FROM CustomerTbl WHERE CustId = @CustomerId", Con);
+                            SQLiteCommand cmd = new SQLiteCommand("DELETE FROM CustomerTbl WHERE CustId = @CustomerId", Con);
                             cmd.Parameters.AddWithValue("@CustomerId", customerId);
                             int rowsAffected = cmd.ExecuteNonQuery();
 
                             if (rowsAffected > 0)
                             {
                                 MessageBox.Show("Customer Successfully Deleted");
-                                selectProducts();
+                                selectCustomers();
                             }
                             else
                             {
@@ -338,6 +300,8 @@ namespace Inventory
             }
         }
 
+
+
         #endregion
 
         #region TextArea
@@ -356,19 +320,15 @@ namespace Inventory
                 e.Handled = true;
             }
         }
-
         #endregion
 
         #region SideBarMenu
-
-   
 
         private void CategoriesMenu_BT_Click(object sender, EventArgs e)
         {
             ManageCategories categories = new ManageCategories();
             categories.Show();
             this.Hide();
-
         }
 
         private void CustomerMenu_BT_Click(object sender, EventArgs e)
@@ -376,7 +336,6 @@ namespace Inventory
             ManageCustomers customers = new ManageCustomers();
             customers.Show();
             this.Close();
-
         }
 
         private void OrderMenu_BT_Click(object sender, EventArgs e)
@@ -384,7 +343,6 @@ namespace Inventory
             ManageOrders orders = new ManageOrders();
             orders.Show();
             this.Close();
-
         }
 
         private void ProductsMenu_BT_Click(object sender, EventArgs e)
@@ -396,7 +354,6 @@ namespace Inventory
                 ManageProducts prod = new ManageProducts();
                 prod.Show();
                 this.Close();
-
             }
             else
             {
@@ -409,12 +366,9 @@ namespace Inventory
             ManageUser users = new ManageUser();
             users.Show();
             this.Close();
-
         }
-
         #endregion
 
-
-
+      
     }
 }

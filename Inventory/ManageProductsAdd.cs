@@ -1,18 +1,18 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
+﻿using System;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
-using System.Configuration;
+using System.Data.SQLite; // Použití SQLite
 
 namespace Inventory
 {
     public partial class ManageProductsAdd : Form
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["Con"].ConnectionString;
-        string ProdId =  "";
+        string connectionString = "Data Source=inventory.db;Version=3;";
+        string ProdId = "";
+
         public ManageProductsAdd()
         {
             InitializeComponent();
@@ -33,25 +33,20 @@ namespace Inventory
             }
         }
 
-
-
-
         #region Functions
-
-
 
         void fillCategory()
         {
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 string query = "SELECT * FROM CategoryTbl";
                 try
                 {
-                    Con.Open(); 
+                    Con.Open();
 
-                    using (SqlCommand cmd = new SqlCommand(query, Con))
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, Con))
                     {
-                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        using (SQLiteDataReader rdr = cmd.ExecuteReader())
                         {
                             DataTable dt = new DataTable();
                             dt.Columns.Add("CatName", typeof(string));
@@ -69,22 +64,21 @@ namespace Inventory
                 {
                     if (Con.State == ConnectionState.Open)
                     {
-                        Con.Close(); 
+                        Con.Close();
                     }
                 }
             }
         }
 
-
         void GenerateId()
         {
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 try
                 {
-                    Con.Open(); 
+                    Con.Open();
 
-                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT (ProdId) FROM ProductTbl", Con))
+                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT COUNT (ProdId) FROM ProductTbl", Con))
                     {
                         int i = Convert.ToInt32(cmd.ExecuteScalar());
                         i++;
@@ -99,29 +93,29 @@ namespace Inventory
                 {
                     if (Con.State == ConnectionState.Open)
                     {
-                        Con.Close(); 
+                        Con.Close();
                     }
                 }
             }
         }
 
 
+
         void selectProducts()
         {
-        //Select data from the database
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            // Select data from the database
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     Con.Open();
-                    string Myquery = "select * from ProductTbl";
-                    using (SqlDataAdapter da = new SqlDataAdapter(Myquery, Con))
+                    string Myquery = "SELECT * FROM ProductTbl";
+
+                    using (SQLiteDataAdapter da = new SQLiteDataAdapter(Myquery, Con))
                     {
-                        using (SqlCommandBuilder builder = new SqlCommandBuilder(da))
-                        {
-                            var ds = new DataSet();
-                            da.Fill(ds);
-                        }
+                        var ds = new DataSet();
+                        da.Fill(ds);
+
                     }
                 }
                 catch (Exception ex)
@@ -132,17 +126,19 @@ namespace Inventory
         }
 
 
-        #endregion
 
+
+
+        #endregion
 
         #region ManageProductSystem
 
         public void insert(string filename, byte[] image)
         {
-            using (SqlConnection Con = new SqlConnection(connectionString))
+            using (SQLiteConnection Con = new SQLiteConnection(connectionString))
             {
-                string myQuery = "INSERT INTO ProductTbl(ProdFile,ProdImage) VALUES (@ProdFile,@ProdImage)";
-                using (SqlCommand cmd = new SqlCommand(myQuery, Con))
+                string myQuery = "INSERT INTO ProductTbl(ProdFile, ProdImage) VALUES (@ProdFile, @ProdImage)";
+                using (SQLiteCommand cmd = new SQLiteCommand(myQuery, Con))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@ProdFile", filename);
@@ -174,11 +170,11 @@ namespace Inventory
 
             try
             {
-                using (SqlConnection Con = new SqlConnection(connectionString))
+                using (SQLiteConnection Con = new SQLiteConnection(connectionString))
                 {
                     Con.Open();
 
-                    SqlCommand checkIdCmd = new SqlCommand("SELECT COUNT(*) FROM ProductTbl WHERE ProdId = @ProdId", Con);
+                    SQLiteCommand checkIdCmd = new SQLiteCommand("SELECT COUNT(*) FROM ProductTbl WHERE ProdId = @ProdId", Con);
                     checkIdCmd.Parameters.AddWithValue("@ProdId", productIDTB.Text);
                     int count = Convert.ToInt32(checkIdCmd.ExecuteScalar());
 
@@ -190,7 +186,7 @@ namespace Inventory
 
                     string insertQuery = "INSERT INTO ProductTbl (ProdId, ProdName, ProdQty, ProdPrice, ProdDesc, ProdCat, ProdFile, ProdText, ProdImage) VALUES (@ProdId, @ProdName, @ProdQty, @ProdPrice, @ProdDesc, @ProdCat, @ProdFile, @ProdText, @ProdImage)";
 
-                    using (SqlCommand insertCmd = new SqlCommand(insertQuery, Con))
+                    using (SQLiteCommand insertCmd = new SQLiteCommand(insertQuery, Con))
                     {
                         insertCmd.Parameters.AddWithValue("@ProdId", productIDTB.Text);
                         insertCmd.Parameters.AddWithValue("@ProdName", productNameTB.Text);
@@ -201,10 +197,12 @@ namespace Inventory
                         insertCmd.Parameters.AddWithValue("@ProdFile", FileNameTB.Text);
                         insertCmd.Parameters.AddWithValue("@ProdText", textProductTb.Text);
 
-                        MemoryStream stream = new MemoryStream();
-                        PictureBox.Image.Save(stream, ImageFormat.Jpeg);
-                        byte[] pic = stream.ToArray();
-                        insertCmd.Parameters.AddWithValue("@ProdImage", pic);
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            PictureBox.Image.Save(stream, ImageFormat.Jpeg);
+                            byte[] pic = stream.ToArray();
+                            insertCmd.Parameters.AddWithValue("@ProdImage", pic);
+                        }
 
                         string folderPath = "Photo";
                         if (!Directory.Exists(folderPath))
@@ -220,11 +218,9 @@ namespace Inventory
                         insertCmd.ExecuteNonQuery();
                         MessageBox.Show("Product Successfully Added");
                         MessageBox.Show("Current Directory: " + Directory.GetCurrentDirectory());
-
                     }
                 }
 
-                selectProducts();
                 this.Close();
             }
             catch (Exception ex)
@@ -235,7 +231,7 @@ namespace Inventory
 
         private void PictureBox_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "ProdFile(*.jpg;*.jpeg)| *.jpg;*.jpeg", Multiselect = false })
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Image Files(*.jpg;*.jpeg)| *.jpg;*.jpeg", Multiselect = false })
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
@@ -248,13 +244,5 @@ namespace Inventory
             }
         }
         #endregion
-
-
-
-
-
-
-
-       
     }
 }
